@@ -6,6 +6,10 @@ Created on Sat Jan 12 15:24:18 2013
 """
 
 import numpy as np
+from scipy import linalg
+from scipy import signal
+from plotgraphs import *
+import matplotlib.pyplot as plt
 
 def mirror(a):
         b  = len(a)
@@ -22,8 +26,7 @@ def Ramp(t,dt,rt,max_ramp):
     grad =max_ramp/rt_inc
     for i in np.arange(0,len(t)):
         if i <=rt_inc:
-            y = lambda(t): grad*t
-            Ysp[i] = y(i)    
+            Ysp[i] = grad*t[i]    
         else:
             Ysp[i] = max_ramp
         
@@ -31,8 +34,15 @@ def Ramp(t,dt,rt,max_ramp):
         
 def Step(t,step_max):
     Ysp = np.zeros(len(t)) 
-    Ysp[1:len(t)] = step_max
+    Ysp[1:] = step_max
     return Ysp
+    
+def Step2(t,step_max,dt,d):  # This function is used in the Tuning function
+        Ysp = np.zeros(len(t))
+        inc = d/dt
+        Ysp[inc:] = step_max
+        return Ysp
+    
 def RPG(num,n):
         k_c = np.zeros(num)
         t_i = np.zeros(num)
@@ -53,7 +63,7 @@ def RPG(num,n):
                 a +=1
         
             return k_c,t_i,t_d
-        else:
+        elif n == 2:
             aa = np.random.rand(num,n)
             a = 0 
             while a <= (num/2):
@@ -65,6 +75,20 @@ def RPG(num,n):
                 k_c[a] = (60-2)*aa[a, 0]+2 
                 t_i[a ] = (30-2)*aa[a, 1]    
                 a +=1
+        else:
+             aa = np.random.rand(num,n)
+             a = 0 
+             while a <= (num/2):
+                k_c[a] = (2)*aa[a]
+                a +=1
+            
+             while a <= num-1:
+                k_c[a] = (60-2)*aa[a]  
+                a +=1
            
         return k_c,t_i,t_d
+
+
+
+
     

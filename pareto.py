@@ -53,4 +53,4 @@ if __name__ == "__main__":
     xd, yd = map(np.array, zip(*front))
     pl.plot(x, y, '.', xd, yd, 'ro-')
     pl.show()
-    #pl.savefig('samplepareto.pdf')
+#    pl.savefig('samplepareto.pdf')

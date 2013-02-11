@@ -59,6 +59,7 @@ def plotgraphs(kc,ti,x,num,entries,t,tfinal,dt,SP,kcst,tist):
     x = x[goodpoints]
     zns = len(por)
     p = pareto.domset([itemgetter(1), itemgetter(2)], zip(idx, por, tr))
+   
     front = p.data
     idx, xd, yd = map(np.array, zip(*front))
     sortidx = np.argsort(xd)
@@ -74,7 +75,7 @@ def plotgraphs(kc,ti,x,num,entries,t,tfinal,dt,SP,kcst,tist):
     
     ax1 = fig.add_subplot(2,2,1)
     linea = ax1.plot(kc[~UNSTABLE],ti[~UNSTABLE], 'w.')
-    lineb = ax1.plot(kcst,tist,'k-')
+#    lineb = ax1.plot(kcst,tist,'k-')
     
     linee = ax1.plot(kc[~SSoffset],ti[~SSoffset],'g+')
     line1, = ax1.plot(kc[goodpoints], ti[goodpoints], 'wo',picker = 5,)
@@ -90,8 +91,8 @@ def plotgraphs(kc,ti,x,num,entries,t,tfinal,dt,SP,kcst,tist):
     line222=ax2.plot(xd, yd, 'ro-')
     line22 = ax2.plot(por[zns-2],tr[zns-2],'ks')
     linecc2 = ax2.plot(por[zns-1],tr[zns-1],'gs') # cohen coon settings
-    plt.setp((linea,lineb,linee,line1),linewidth = 2.0)
-    plt.figlegend((linea,lineb,linec,lined,lineco,linetl,linee,line1),('Unstable','Stabilty limit','Pareto points','Z&N settings','Cohen Coon','Tyreus & Luyben','S/S offset','Stable'),'upper right',borderaxespad=0.)
+#    plt.setp((linea,lineb,linee,line1),linewidth = 2.0)
+#    plt.figlegend((linea,lineb,linec,lined,lineco,linetl,linee,line1),('Unstable','Stabilty limit','Pareto points','Z&N settings','Cohen Coon','Tyreus & Luyben','S/S offset','Stable'),'upper right',borderaxespad=0.)
     plt.axis([-0.2,1, 0,40])
     plt.ylabel('risetime (s)',fontsize = 'large')
     plt.xlabel('overshoot ratio',fontsize = 'large')
@@ -188,7 +189,7 @@ def plotgraphs(kc,ti,x,num,entries,t,tfinal,dt,SP,kcst,tist):
             plt.axis([0,tfinal, 0,SP*2]) #######
             ax3.plot(t,yt,tpr[p2],((por[p2] + 1)*SP),'ro',linewidth = 2.0)
             ax3.axhline(y=SP,color ='black',linestyle ='--')
-            rr = np.linspace(0,SP)
+            rr = np.linspace(0,SP) ##########
             yy = [tr[p2]]*len(rr)
             ax3.plot(yy,rr,'k--')
          
