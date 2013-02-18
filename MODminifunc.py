@@ -2,14 +2,11 @@
 """
 Created on Sat Jan 12 15:24:18 2013
 
-@author: Rowly
+@author: Rowly Mudzhiba
 """
 
 import numpy as np
 from scipy import linalg
-from scipy import signal
-from plotgraphs import *
-import matplotlib.pyplot as plt
 
 def mirror(a):
         b  = len(a)

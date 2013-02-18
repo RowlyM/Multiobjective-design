@@ -10,7 +10,7 @@ import numpy as np
 from scipy import linalg
 from scipy import signal
 from plotgraphs import * 
-from MODminifunc import*
+import MODminifunc as func
 from Tuners import*
  
 # Process Transfer function 
@@ -35,12 +35,12 @@ x = np.zeros((entries,num))
 
 por = np.zeros(num)             # What are these two variables?
 tr = np.zeros(num)
-[k_c,t_i,t_d]  = RPG(num,2)     # Random Parameter Generator
+[k_c,t_i,t_d]  = func.RPG(num,2)     # Random Parameter Generator
                                 # Options: 1= P, 2 = PI, 3 = PID
 
 # Different Ysp inputs
-u = Ramp(t,dt,5,SP)             # Choose either of them by commenting the other
-u = Step(t,SP)
+u = func.Ramp(t,dt,5,SP)             # Choose either of them by commenting the other
+u = func.Step(t,SP)
 
   
 # coefficients of the transfer function Gp = kp/(s^3 + As^2 + Bs +C)
