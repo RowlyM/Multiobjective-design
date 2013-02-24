@@ -28,7 +28,7 @@ def ZN(OL_Gp_n,OL_Gp_d,t,SP,Contr,dt,Td):
         tau =((t2 - t1))
         Td =(t2 - tau)
         CP = np.zeros(3)
-        
+#        print tau,Td,kp
         
         if Contr == 'P':
 #            print 'P Controller'
@@ -46,8 +46,8 @@ def ZN(OL_Gp_n,OL_Gp_d,t,SP,Contr,dt,Td):
             CP[1] = 2*Td
             CP[2] = .5*Td
             
-        print 'Ziegler-Nicholas parameters'     
-        print CP    
+#        print 'Ziegler-Nicholas parameters'     
+#        print CP    
         return CP
     
 def Cohen_Coon(OL_Gp_n,OL_Gp_d,t,SP,Contr,dt,Td):
@@ -92,6 +92,6 @@ def Cohen_Coon(OL_Gp_n,OL_Gp_d,t,SP,Contr,dt,Td):
 #            print 'PD Controller'
 #            CP[0] = (1.24/a)*(1+(0.13*b)/(1-b))
 #            CP[2] = (.27-.36*b)/(1-0.87*b)*Td
-        print ' Cohen- Coon Parameters'
-        print CP
+#        print ' Cohen- Coon Parameters'
+#        print CP
         return CP

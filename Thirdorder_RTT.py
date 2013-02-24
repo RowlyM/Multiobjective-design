@@ -12,34 +12,38 @@ from scipy import signal
 from plotgraphs import * 
 import MODminifunc as func
 from Tuners import*
+from DDEfunction import DDE
+import matplotlib.pyplot as plt
  
 # Process Transfer function 
-Gp_n = [.125]       
+Gp_n = [0.125]       
 Gp_d = [1,3,3,1]
 
-TD =0                 # Dead time (s)                            
+TD =10                 # Dead time (s)                            
 TD_n = [-(TD/2),1]               # Approximating the time delay term in the denominator
 TD_d = [(TD/2),1]                # by a first-order Pade´ approximation
 
-OL_Gp_n = np.polymul(Gp_n,TD_n)     # Dead time is added to the Process transfer function.
-OL_Gp_d = np.polymul(Gp_d,TD_d)     
-                                 
-SP =1                       # Set Point            
+#OL_Gp_n = np.polymul(Gp_n,TD_n)     # Dead time is added to the Process transfer function.
+#OL_Gp_d = np.polymul(Gp_d,TD_d)
 
-tfinal = 50# simulation period
+OL_Gp_n = Gp_n
+OL_Gp_d = Gp_d                            
+SP =1                     # Set Point            
+
+tfinal = 25# simulation period
 dt = 0.2
 t = np.arange(0, tfinal, dt)
 entries = len(t)
-num =100               # number of tuning constant sets
+num =25               # number of tuning constant sets
 x = np.zeros((entries,num))
-
+x2 = np.zeros((entries,num))
 por = np.zeros(num)             # What are these two variables?
 tr = np.zeros(num)
 [k_c,t_i,t_d]  = func.RPG(num,2)     # Random Parameter Generator
                                 # Options: 1= P, 2 = PI, 3 = PID
 
 # Different Ysp inputs
-u = func.Ramp(t,dt,5,SP)             # Choose either of them by commenting the other
+#u = func.Ramp(t,dt,5,SP)             # Choose either of them by commenting the other
 u = func.Step(t,SP)
 
   
@@ -86,32 +90,43 @@ for k in range(0,num):
         
                                           # The controller and process TFs are entered here                                           # because the process selection interface hasnt been 
                                             # designed.
-    TF_n = np.polymul(OL_Gp_n,Gc_n)
-    TF_d = np.polyadd(np.polymul(Gc_d,OL_Gp_d),TF_n)
-    (A,B,C,D) =signal.tf2ss(TF_n,TF_d)      # Transfer Function is converted to State Space
-    
-    mat = A                                 # new code
-#    Amat = linalg.inv(mat)
+    OL_TF_n = np.polymul(OL_Gp_n,Gc_n)
+#    TF_d = np.polyadd(np.polymul(Gc_d,OL_Gp_d),TF_n)
+    OL_TF_d = np.polymul(Gc_d,OL_Gp_d)
+    CL_TF_n = OL_TF_n
+    CL_TF_d = np.polyadd(np.polymul(OL_TF_n,OL_TF_d),OL_TF_n)
+    (A,B,C,D) =signal.tf2ss(CL_TF_n,CL_TF_d)      # Transfer Function is converted to State Space
+#    print CL_TF_n,CL_TF_d
+    mat = A                                # new code
+
     rootsA = np.array(linalg.eigvals(A))
     sys = signal.lti(A,B,C,D)
-    
-    
+
+#    step_responseDDE = DDE(OL_TF_n,OL_TF_d,t,TD,u)
+#    u =sum(u,-step_responseDDE)
+
     step_response = signal.lsim((A,B,C,D),u,t,X0=None,interp=1)[1]
-#    step_response = sys.step(T=t)[1]
+    step_responseDDE = DDE(CL_TF_n,CL_TF_d,t,TD,u)
    
     if (rootsA.real < 0).all():
         for i in range(0,entries):          # Stabilty of the Closed Loop is checked 
             X = step_response
+            X2 = step_responseDDE
             x[i,k] = X[i]
+            x2[i,k] = X2[i]
     else:
         x[:,k] = np.NaN
-        
+        x2[:,k] = np.NaN
+#        
     
     k_c[k] = kc
     t_i[k] = ti
     
 kc = k_c
 ti = t_i
-x = x.T
+x = x2.T
+#x = x.T
+#plt.plot(t,x)
+#plt.show()
 
 fig = plotgraphs(kc,ti,x,num,entries,t,tfinal,dt,SP,kcst,tist)
