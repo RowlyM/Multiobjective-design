@@ -16,10 +16,10 @@ from DDEfunction import DDE
 import matplotlib.pyplot as plt
  
 # Process Transfer function 
-Gp_n = [0.125]       
-Gp_d = [1,3,3,1]
+Gp_n = [1]       
+Gp_d = [1,3,5,5]
 
-TD =10                 # Dead time (s)                            
+TD =3                # Dead time (s)                            
 TD_n = [-(TD/2),1]               # Approximating the time delay term in the denominator
 TD_d = [(TD/2),1]                # by a first-order Pade´ approximation
 
@@ -28,18 +28,18 @@ TD_d = [(TD/2),1]                # by a first-order Pade´ approximation
 
 OL_Gp_n = Gp_n
 OL_Gp_d = Gp_d                            
-SP =1                     # Set Point            
+SP =2                     # Set Point            
 
-tfinal = 25# simulation period
-dt = 0.2
+tfinal = 40# simulation period
+dt = 0.1
 t = np.arange(0, tfinal, dt)
 entries = len(t)
-num =25               # number of tuning constant sets
+num =100              # number of tuning constant sets
 x = np.zeros((entries,num))
 x2 = np.zeros((entries,num))
 por = np.zeros(num)             # What are these two variables?
 tr = np.zeros(num)
-[k_c,t_i,t_d]  = func.RPG(num,2)     # Random Parameter Generator
+[k_c,t_i,t_d]  = func.RPG(num,3)     # Random Parameter Generator
                                 # Options: 1= P, 2 = PI, 3 = PID
 
 # Different Ysp inputs
@@ -60,8 +60,8 @@ kcst = np.arange(0,60,dt)
 tist =kp*kcst*A**2/(((A*B) - C - (kp*kcst))*(C + (kp*kcst)))
 
 
-kczn ,tizn,tdzn = ZN(Gp_n,Gp_d,t,SP,'PI',dt,TD) # Ziegler-Nichols settings via function ZN
-kcch ,tich,tdch = Cohen_Coon(OL_Gp_n,OL_Gp_d,t,SP,'PI',dt,TD)  
+kczn ,tizn,tdzn = ZN(Gp_n,Gp_d,t,SP,'PID',dt,TD) # Ziegler-Nichols settings via function ZN
+kcch ,tich,tdch = Cohen_Coon(OL_Gp_n,OL_Gp_d,t,SP,'PID',dt,TD)  
 
 ## System responce
 for k in range(0,num):
@@ -105,17 +105,17 @@ for k in range(0,num):
 #    step_responseDDE = DDE(OL_TF_n,OL_TF_d,t,TD,u)
 #    u =sum(u,-step_responseDDE)
 
-    step_response = signal.lsim((A,B,C,D),u,t,X0=None,interp=1)[1]
-    step_responseDDE = DDE(CL_TF_n,CL_TF_d,t,TD,u)
+#    step_response = signal.lsim((A,B,C,D),u,t,X0=None,interp=1)[1]
+    step_responseDDE = DDE(A,B,C,D,t,u,TD)
    
     if (rootsA.real < 0).all():
         for i in range(0,entries):          # Stabilty of the Closed Loop is checked 
-            X = step_response
+#            X = step_response
             X2 = step_responseDDE
-            x[i,k] = X[i]
+#            x[i,k] = X[i]
             x2[i,k] = X2[i]
     else:
-        x[:,k] = np.NaN
+#        x[:,k] = np.NaN
         x2[:,k] = np.NaN
 #        
     
