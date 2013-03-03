@@ -16,22 +16,22 @@ from DDEfunction import DDE
 import matplotlib.pyplot as plt
  
 # Process Transfer function 
-Gp_n = [1]       
-Gp_d = [1,3,5,5]
-
-TD =3                # Dead time (s)                            
-TD_n = [-(TD/2),1]               # Approximating the time delay term in the denominator
-TD_d = [(TD/2),1]                # by a first-order Pade´ approximation
+Gp_n = [0.125]       
+Gp_d = [1,3,3,1]
+dt = 0.1
+DT =dt*10           # Dead time (s)                            
+TD_n = [-(DT/2),1]               # Approximating the time delay term in the denominator
+TD_d = [(DT/2),1]                # by a first-order Pade´ approximation
 
 #OL_Gp_n = np.polymul(Gp_n,TD_n)     # Dead time is added to the Process transfer function.
 #OL_Gp_d = np.polymul(Gp_d,TD_d)
 
 OL_Gp_n = Gp_n
 OL_Gp_d = Gp_d                            
-SP =2                     # Set Point            
+SP =2                    # Set Point            
 
-tfinal = 40# simulation period
-dt = 0.1
+tfinal = 100# simulation period
+
 t = np.arange(0, tfinal, dt)
 entries = len(t)
 num =100              # number of tuning constant sets
@@ -60,8 +60,8 @@ kcst = np.arange(0,60,dt)
 tist =kp*kcst*A**2/(((A*B) - C - (kp*kcst))*(C + (kp*kcst)))
 
 
-kczn ,tizn,tdzn = ZN(Gp_n,Gp_d,t,SP,'PID',dt,TD) # Ziegler-Nichols settings via function ZN
-kcch ,tich,tdch = Cohen_Coon(OL_Gp_n,OL_Gp_d,t,SP,'PID',dt,TD)  
+kczn ,tizn,tdzn = ZN(Gp_n,Gp_d,t,SP,'PID',dt,DT) # Ziegler-Nichols settings via function ZN
+kcch ,tich,tdch = Cohen_Coon(OL_Gp_n,OL_Gp_d,t,SP,'PID',dt,DT)  
 
 ## System responce
 for k in range(0,num):
@@ -91,22 +91,21 @@ for k in range(0,num):
                                           # The controller and process TFs are entered here                                           # because the process selection interface hasnt been 
                                             # designed.
     OL_TF_n = np.polymul(OL_Gp_n,Gc_n)
-#    TF_d = np.polyadd(np.polymul(Gc_d,OL_Gp_d),TF_n)
     OL_TF_d = np.polymul(Gc_d,OL_Gp_d)
     CL_TF_n = OL_TF_n
-    CL_TF_d = np.polyadd(np.polymul(OL_TF_n,OL_TF_d),OL_TF_n)
+    CL_TF_d = np.polyadd(OL_TF_d,OL_TF_n)
     (A,B,C,D) =signal.tf2ss(CL_TF_n,CL_TF_d)      # Transfer Function is converted to State Space
 #    print CL_TF_n,CL_TF_d
-    mat = A                                # new code
+#    mat = A                                # new code
 
     rootsA = np.array(linalg.eigvals(A))
-    sys = signal.lti(A,B,C,D)
+#    sys = signal.lti(A,B,C,D)
 
 #    step_responseDDE = DDE(OL_TF_n,OL_TF_d,t,TD,u)
 #    u =sum(u,-step_responseDDE)
 
 #    step_response = signal.lsim((A,B,C,D),u,t,X0=None,interp=1)[1]
-    step_responseDDE = DDE(A,B,C,D,t,u,TD)
+    step_responseDDE = DDE(A,B,C,D,t,u,DT,SP)
    
     if (rootsA.real < 0).all():
         for i in range(0,entries):          # Stabilty of the Closed Loop is checked 
