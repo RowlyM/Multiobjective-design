@@ -13,25 +13,17 @@ from plotgraphs import *
 import MODminifunc as func
 from Tuners import*
 from DDEfunction import DDE
-import matplotlib.pyplot as plt
+
  
 # Process Transfer function 
 Gp_n = [0.125]       
 Gp_d = [1,3,3,1]
+                          
+# Simulation Settings                          
+SP = 4                    # Set Point            
+tfinal = 100              # simulation period
 dt = 0.1
-DT =dt*10           # Dead time (s)                            
-TD_n = [-(DT/2),1]               # Approximating the time delay term in the denominator
-TD_d = [(DT/2),1]                # by a first-order Pade´ approximation
-
-#OL_Gp_n = np.polymul(Gp_n,TD_n)     # Dead time is added to the Process transfer function.
-#OL_Gp_d = np.polymul(Gp_d,TD_d)
-
-OL_Gp_n = Gp_n
-OL_Gp_d = Gp_d                            
-SP =2                    # Set Point            
-
-tfinal = 100# simulation period
-
+DT =.5                     # Dead time (s)  
 t = np.arange(0, tfinal, dt)
 entries = len(t)
 num =100              # number of tuning constant sets
@@ -40,7 +32,7 @@ x2 = np.zeros((entries,num))
 por = np.zeros(num)             # What are these two variables?
 tr = np.zeros(num)
 [k_c,t_i,t_d]  = func.RPG(num,3)     # Random Parameter Generator
-                                # Options: 1= P, 2 = PI, 3 = PID
+                                    # Options: 1= P, 2 = PI, 3 = PID
 
 # Different Ysp inputs
 #u = func.Ramp(t,dt,5,SP)             # Choose either of them by commenting the other
@@ -53,7 +45,6 @@ B = 3
 C = 1                 # Old process coefficients used in the initial project
 kp =0.125 
 SP = SP
-
 kcst = np.arange(0,60,dt)
 
 # Relatiopnship btwn kc and Ti obtained through the direct substitution method
@@ -61,7 +52,7 @@ tist =kp*kcst*A**2/(((A*B) - C - (kp*kcst))*(C + (kp*kcst)))
 
 
 kczn ,tizn,tdzn = ZN(Gp_n,Gp_d,t,SP,'PID',dt,DT) # Ziegler-Nichols settings via function ZN
-kcch ,tich,tdch = Cohen_Coon(OL_Gp_n,OL_Gp_d,t,SP,'PID',dt,DT)  
+kcch ,tich,tdch = Cohen_Coon(Gp_n,Gp_d,t,SP,'PID',dt,DT)  
 
 ## System responce
 for k in range(0,num):
@@ -90,20 +81,16 @@ for k in range(0,num):
         
                                           # The controller and process TFs are entered here                                           # because the process selection interface hasnt been 
                                             # designed.
-    OL_TF_n = np.polymul(OL_Gp_n,Gc_n)
-    OL_TF_d = np.polymul(Gc_d,OL_Gp_d)
+    OL_TF_n = np.polymul(Gp_n,Gc_n)
+    OL_TF_d = np.polymul(Gc_d,Gp_d)
     CL_TF_n = OL_TF_n
     CL_TF_d = np.polyadd(OL_TF_d,OL_TF_n)
-    (A,B,C,D) =signal.tf2ss(CL_TF_n,CL_TF_d)      # Transfer Function is converted to State Space
-#    print CL_TF_n,CL_TF_d
-#    mat = A                                # new code
+    (A,B,C,D) =signal.tf2ss(OL_TF_n,OL_TF_d)      # Open Loop Transfer Function is converted to State Space
+    (A_CL,B_CL,C_CL,D_CL) =signal.tf2ss(CL_TF_n,CL_TF_d) # Closed Loop Transfer Function is converted to State Space
 
-    rootsA = np.array(linalg.eigvals(A))
-#    sys = signal.lti(A,B,C,D)
 
-#    step_responseDDE = DDE(OL_TF_n,OL_TF_d,t,TD,u)
-#    u =sum(u,-step_responseDDE)
-
+    rootsA = np.array(linalg.eigvals(A_CL))
+    
 #    step_response = signal.lsim((A,B,C,D),u,t,X0=None,interp=1)[1]
     step_responseDDE = DDE(A,B,C,D,t,u,DT,SP)
    

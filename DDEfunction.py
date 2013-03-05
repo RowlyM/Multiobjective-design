@@ -6,79 +6,72 @@ Created on Fri Feb 22 14:12:13 2013
         
 """
 
-import numpy as np
+from numpy import*
 import PyDDE.pydde as p
+from MODminifunc import mirror
 
 def DDE(A,B,C,D,t,u,DT,SP):
-    # ddegrad is function the lists ODE eg. dy/dt= 1-y
+    # ddegrad code below will be explained properly on the log-book
     def ddegrad(s,c,t):
-        NODEs = len(A[0,:])+len(C[0,:]) # Number of differential equations
-        alag = np.zeros(NODEs-1)       
-        if (t>DT):
-            for l in np.arange(0, NODEs-1):
-                alag[l] = np.array(p.pastvalue(l,t-DT,0)) # Stores state values. 
-
-        gradvec= np.zeros(NODEs-1) # ODE function sero vector
-        for i in range(0,NODEs-1):
-
-            if i == 0:
-                if (t<=DT):
-                    gradvec[0] = 0
+        NODEs = len(c)-1
+        grad = zeros(NODEs)
+        for g in range(0,NODEs):
+            if DT == 0:
+                if g == 0:
+                    grad[g] = (SP-s[0])*c[-1]+ dot(c[0:NODEs],s[0:NODEs])
                 else:
-                    y_last_entry = np.zeros(NODEs) 
-                    cd = NODEs/2-1
-                    for y in range(0,NODEs):
-                        if y < NODEs/2:
-                            y_last_entry[y] = c[y]*alag[cd]
-                        elif y ==NODEs-1:
-                                y_last_entry[y] = c[y]*1+(SP-alag[0])
-                        else:
-                            y_last_entry[y] = c[y]*alag[y]
-                        cd -=1
-                    gradvec[i] = sum(y_last_entry)   
-
+                    grad[g] = s[g]
             else:
-                gradvec[i] = alag[i]
-
-        return np.array(gradvec)
-    def ddesthist(g, s, c, t):
+                if g == 0:
+                    if t <= DT:
+                        grad[g] = 0
+                    else:
+                        alag = zeros(NODEs)
+                        if t > DT:
+                            for l in range(0,NODEs):
+                                alag[l] = p.pastvalue(l,t-(DT),0)
+                        grad[g] =(SP-alag[0])*c[-1]+ dot(c[0:NODEs],s[0:NODEs])
+                else:
+                    grad[g] = s[g]    
+                    
+        return array(grad)
+    
+    def ddesthist(g, s, c, t): # Stores past state variables and its used by the PyDDE solver
         return (s, g)        
-        
-    ode_eg = p.dde()
-           
-    # Setting up constants that are used in dde solver
-    if len(A[0,:])>len(C[0,:]):
-       C = np.zeros(len(A[0,:]))
-       for i in range(0,len(C[0,:])):
-           C[i] = C[0,i]
+   
     
-    cons = np.zeros((2,len(A[0,:])))
-    
+    # Setting up constants that are used in the "ode_eg.initproblem"
+    cons = zeros((2,len(A)))
+    A = mirror(A[0])
     for i in range(0,2):
-        for j in range(0,len(A[0,:])):
+        for j in range(0,len(A)):
             if i == 0:
-                cons[i,j] = A[0,j]
+                cons[i,j] = A[j]
             else:
                 cons[i,j] = C[0,j]
-            
-    odecons = np.ravel(cons)
-    odeist = np.zeros(len(A[0])*2)
-    if len(A[0,:])==1:
+           
+    odecons = cons.ravel()
+    ini_values = zeros(len(A)*2)
+    odeist = ini_values
+    if len(A)==1:
         n = 1
     else:
-        n = len(A[0,:])*2-1
-        
+        n = len(A)*2-1
+    
+    # PyDDE Solvers
+    ode_eg = p.dde()
     ode_eg.initproblem(no_vars=n, no_cons=len(odecons), nlag=1, nsw=0,
                            t0=0.0, t1=t[-1],
                            initstate=odeist, c=odecons, otimes=t,
                            grad=ddegrad,storehistory=ddesthist)
         
-    odestsc = np.array([0])   
+    odestsc = array([0])   
     ode_eg.initsolver(tol=1*10**(-5), hbsize=1000,
                           dt=t[1], 
                           statescale=odestsc)
         
     ode_eg.solve()
+    
+    
     yDDE =ode_eg.data[:,1]
-#    print yDDE
     return yDDE

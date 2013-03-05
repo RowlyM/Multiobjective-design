@@ -11,7 +11,7 @@ from scipy import linalg
 def mirror(a):
         b  = len(a)
         t = 0
-        c = ones(b)
+        c = np.ones(b)
         for i in range(b-1,-1,-1):
             c[t] = a[i]
             t += 1
