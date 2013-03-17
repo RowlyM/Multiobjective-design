@@ -2,11 +2,12 @@
 """
 Created on Sat Feb 09 10:34:56 2013
 
-@author: Rowly
+@author: Rowly Mudzhiba
 """
 import numpy as np
 from scipy import signal
 import MODminifunc as func
+
 
 def ZN(OL_Gp_n,OL_Gp_d,t,SP,Contr,dt,Td):
         

@@ -10,30 +10,35 @@ Created on Mon Feb 18 00:23:28 2013
 import numpy as np
 import matplotlib.pyplot as plt
 from operator import itemgetter
-import plotfuncs as pf
+import plotfuncs as pltf
 import pareto
 
 def plotgraphs(kc,ti,x,num,entries,t,tfinal,dt,SP,kcst,tist):
     
 
-    por2 = pf.overshoot(x,num,SP,entries,t)
+    por2 = pltf.overshoot(t,x,num,entries,SP)
     por = por2['por']
     tpr = por2['tpr']
     
- # calculates the risetime
+#   calculates the risetime
    
-    tr= pf.risetime(x,num,entries,SP,t)
+    tr= pltf.risetime(t,x,num,entries,SP)
     SSoffset = ~np.isneginf(por)
-    UNSTABLE =~np.isnan(por)  
+    UNSTABLE = ~np.isnan(por)  
          
-#   Added more objectives to the project
+#   ISE
+    ISE = pltf.ISE(t,x,num,entries,SP)
 
-# plots the graphs
+    
+
+#   plots the graphs
     goodpoints = ~(np.isnan(tr)| np.isnan(por)|np.isneginf(por))
+#    print goodpoints
     idx = np.arange(0,num)
     tr = tr[goodpoints]
     por = por[goodpoints]
     tpr = tpr[goodpoints]
+    ISE = ISE[goodpoints]
     idx = idx[goodpoints]
     x = x[goodpoints]
     zns = len(por)
@@ -58,7 +63,7 @@ def plotgraphs(kc,ti,x,num,entries,t,tfinal,dt,SP,kcst,tist):
     
     linee = ax1.plot(kc[~SSoffset],ti[~SSoffset],'g+')
     line1, = ax1.plot(kc[goodpoints], ti[goodpoints], 'wo',picker = 5,)
-    linec = ax1.plot(kc[idx], ti[idx],'ro')
+    linec = ax1.plot(kc[idx], ti[idx],'bo')
     lined = ax1.plot(kc[num-2],ti[num-2],'ks') # Ziegler Nichos settings
     lineco = ax1.plot(kc[num-1],ti[num-1],'gs') # Cohen coon settings
     linetl = ax1.plot(kc[num-3],ti[num-3],'ms') # tyreas n Luyben settings
@@ -67,7 +72,7 @@ def plotgraphs(kc,ti,x,num,entries,t,tfinal,dt,SP,kcst,tist):
     ax2= fig.add_subplot(2,2,2)
     line2, =ax2.plot(por, tr, 'wo',picker = 5,)
     
-    line222=ax2.plot(xd, yd, 'ro-')
+    line222=ax2.plot(xd, yd, 'bo-')
     line22 = ax2.plot(por[zns-2],tr[zns-2],'ks')
     linecc2 = ax2.plot(por[zns-1],tr[zns-1],'gs') # cohen coon settings
 #    plt.setp((linea,lineb,linee,line1),linewidth = 2.0)
@@ -121,7 +126,7 @@ def plotgraphs(kc,ti,x,num,entries,t,tfinal,dt,SP,kcst,tist):
             plt.ylabel('y',fontsize = 12)
             plt.xlabel('time (s)',fontsize = 12)
             plt.axis([0,tfinal, 0,SP*2]) #####Change of response graph y-axis
-            ax3.plot(t,yt,tpr[pstn],((por[pstn] + 1)*SP),'ro')
+            ax3.plot(t,yt,tpr[pstn],((por[pstn] + 1)*SP),'bo')
             ax3.axhline(y=SP,color ='black',linestyle ='--')
             rr = np.linspace(0,SP)
             yy = [tr[pstn]]*len(rr)
@@ -166,7 +171,7 @@ def plotgraphs(kc,ti,x,num,entries,t,tfinal,dt,SP,kcst,tist):
             plt.ylabel('x')
             plt.xlabel('time (s)')
             plt.axis([0,tfinal, 0,SP*2]) #######
-            ax3.plot(t,yt,tpr[p2],((por[p2] + 1)*SP),'ro',linewidth = 2.0)
+            ax3.plot(t,yt,tpr[p2],((por[p2] + 1)*SP),'bo',linewidth = 2.0)
             ax3.axhline(y=SP,color ='black',linestyle ='--')
             rr = np.linspace(0,SP) ##########
             yy = [tr[p2]]*len(rr)

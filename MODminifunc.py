@@ -17,21 +17,23 @@ def mirror(a):
             t += 1
         return c
 
-def Ramp(t,dt,rt,max_ramp):
+def Ramp(t,ramp_time,SP):
     Ysp = np.zeros(len(t))
-    rt_inc =rt/dt
-    grad =max_ramp/rt_inc
     for i in np.arange(0,len(t)):
-        if i <=rt_inc:
-            Ysp[i] = grad*t[i]    
+        if t[i] <=ramp_time:
+            Ysp[i] = (SP/ramp_time)*t[i]    
         else:
-            Ysp[i] = max_ramp
+            Ysp[i] = SP
         
     return Ysp       
         
-def Step(t,step_max):
-    Ysp = np.zeros(len(t)) 
-    Ysp[1:] = step_max
+def Step(t,step_time,SP):
+    Ysp = np.zeros(len(t))
+    for i in np.arange(0,len(t)):
+        if t[i]< step_time:
+            Ysp = 0
+        else:
+            Ysp[i] = SP
     return Ysp
     
 def Step2(t,step_max,dt,d):  # This function is used in the Tuning function

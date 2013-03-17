@@ -12,32 +12,44 @@ from scipy import signal
 from plotgraphs import * 
 import MODminifunc as func
 from Tuners import*
-from DDEfunction import DDE
-
- 
+#from DDEfunction import DDE
+from EulerODE import Euler
+from scipy import*
 # Process Transfer function 
-Gp_n = [0.125]       
-Gp_d = [1,3,3,1]
+Gp_n = [1]       
+Gp_d = [1,5,6]
                           
 # Simulation Settings                          
-SP = 4                    # Set Point            
-tfinal = 100              # simulation period
-dt = 0.1
-DT =.5                     # Dead time (s)  
+SP = 2.                   # Set Point            
+tfinal = 100        # simulation period
+dt = .1
+DT =1          # Dead time (s)  
 t = np.arange(0, tfinal, dt)
 entries = len(t)
-num =100              # number of tuning constant sets
-x = np.zeros((entries,num))
-x2 = np.zeros((entries,num))
+num =100           # number of tuning constant sets
+y = np.zeros((entries,num))
 por = np.zeros(num)             # What are these two variables?
 tr = np.zeros(num)
-[k_c,t_i,t_d]  = func.RPG(num,3)     # Random Parameter Generator
+
+# Controller choice
+Contr_type = 'PID'               # Choose controller by typing 'P' , 'PI' or 'PID'
+if Contr_type == 'P':
+    Controller = 1
+elif Contr_type == 'PI':
+    Controller = 2
+elif Contr_type == 'PID':
+    Controller = 3
+
+[k_c,t_i,t_d]  = func.RPG(num,Controller)     # Random Parameter Generator
                                     # Options: 1= P, 2 = PI, 3 = PID
 
-# Different Ysp inputs
-#u = func.Ramp(t,dt,5,SP)             # Choose either of them by commenting the other
-u = func.Step(t,SP)
-
+# Different Ysp inputs           
+SP_input = 'step'           # Choose Set point input by typing 'step' or 'ramp'
+step_time  = 0
+ramp_time = 5.
+#u = func.Ramp(t,ramp_time,SP)
+u = func.Step(t,step_time,SP)           
+SP_info = [SP_input,step_time, ramp_time,SP]
   
 # coefficients of the transfer function Gp = kp/(s^3 + As^2 + Bs +C)
 A =3
@@ -51,8 +63,8 @@ kcst = np.arange(0,60,dt)
 tist =kp*kcst*A**2/(((A*B) - C - (kp*kcst))*(C + (kp*kcst)))
 
 
-kczn ,tizn,tdzn = ZN(Gp_n,Gp_d,t,SP,'PID',dt,DT) # Ziegler-Nichols settings via function ZN
-kcch ,tich,tdch = Cohen_Coon(Gp_n,Gp_d,t,SP,'PID',dt,DT)  
+kczn ,tizn,tdzn = ZN(Gp_n,Gp_d,t,SP,Contr_type,dt,DT) # Ziegler-Nichols settings via function ZN
+kcch ,tich,tdch = Cohen_Coon(Gp_n,Gp_d,t,SP,Contr_type,dt,DT)  
 
 ## System responce
 for k in range(0,num):
@@ -76,11 +88,10 @@ for k in range(0,num):
         Gc_n = [kc*ti*td,(kc*ti),kc] 
         
     else:    
-        Gc_n = [kc*ti*td,(kc*ti),kc]            #New code
+        Gc_n = [kc*ti*td,(kc*ti),kc]
         Gc_d = [ti,0] 
         
-                                          # The controller and process TFs are entered here                                           # because the process selection interface hasnt been 
-                                            # designed.
+    # The process and controller transfer functions are multiplied to make the open loop TF                                    
     OL_TF_n = np.polymul(Gp_n,Gc_n)
     OL_TF_d = np.polymul(Gc_d,Gp_d)
     CL_TF_n = OL_TF_n
@@ -92,27 +103,22 @@ for k in range(0,num):
     rootsA = np.array(linalg.eigvals(A_CL))
     
 #    step_response = signal.lsim((A,B,C,D),u,t,X0=None,interp=1)[1]
-    step_responseDDE = DDE(A,B,C,D,t,u,DT,SP)
-   
+#    step_responseDDE = DDE(A,B,C,D,t,SP_info,DT)
+    step_responseEuler = Euler(A,B,C,D,t,u,DT)
+    
     if (rootsA.real < 0).all():
         for i in range(0,entries):          # Stabilty of the Closed Loop is checked 
-#            X = step_response
-            X2 = step_responseDDE
-#            x[i,k] = X[i]
-            x2[i,k] = X2[i]
+            Y = step_responseEuler
+            y[i,k] = Y[i]
+            
     else:
-#        x[:,k] = np.NaN
-        x2[:,k] = np.NaN
-#        
+        y[:,k] = np.NaN    
     
     k_c[k] = kc
     t_i[k] = ti
     
 kc = k_c
 ti = t_i
-x = x2.T
-#x = x.T
-#plt.plot(t,x)
-#plt.show()
+y = y.T
 
-fig = plotgraphs(kc,ti,x,num,entries,t,tfinal,dt,SP,kcst,tist)
+fig = plotgraphs(kc,ti,y,num,entries,t,tfinal,dt,SP,kcst,tist)
