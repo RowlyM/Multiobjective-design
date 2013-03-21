@@ -8,26 +8,30 @@ import numpy as np
 from scipy import signal
 import MODminifunc as func
 
+def first_order_estimate(OL_Gp_n, SP, OL_Gp_d, t, dt, Td):
+    u = func.Step2(t,SP,dt,Td)
+    (A,B,C,D) =signal.tf2ss(OL_Gp_n,OL_Gp_d)      # Transfer Function is converted to State Space
+    y = signal.lsim((A,B,C,D),u,t,X0=None,interp=1)[1]
+    kp = max(y)
+    for i in np.arange(0,len(t)):
+
+        if y[i]>0:
+            t1 = t[i]
+            break
+
+    for i in np.arange(0,len(t)):   
+        if y[i] > 0.6321*max(y):
+            t2 = t[i]
+            break
+
+    tau =((t2 - t1))
+    Td =(t2 - tau)
+    return tau, Td, kp
+
 
 def ZN(OL_Gp_n,OL_Gp_d,t,SP,Contr,dt,Td):
         
-        u = func.Step2(t,SP,dt,Td)
-        (A,B,C,D) =signal.tf2ss(OL_Gp_n,OL_Gp_d)      # Transfer Function is converted to State Space
-        y = signal.lsim((A,B,C,D),u,t,X0=None,interp=1)[1]
-        kp = max(y)
-        for i in np.arange(0,len(t)):
-        
-            if y[i]>0:
-                t1 = t[i]
-                break
-    
-        for i in np.arange(0,len(t)):   
-            if y[i] > 0.6321*max(y):
-                t2 = t[i]
-                break
-
-        tau =((t2 - t1))
-        Td =(t2 - tau)
+        tau, Td, kp = first_order_estimate(OL_Gp_n, SP, OL_Gp_d, t, dt, Td)
         CP = np.zeros(3)
 #        print tau,Td,kp
         
@@ -50,25 +54,9 @@ def ZN(OL_Gp_n,OL_Gp_d,t,SP,Contr,dt,Td):
 #        print 'Ziegler-Nicholas parameters'     
 #        print CP    
         return CP
-    
-def Cohen_Coon(OL_Gp_n,OL_Gp_d,t,SP,Contr,dt,Td):
-        u = func.Step2(t,SP,dt,Td)
-        (A,B,C,D) =signal.tf2ss(OL_Gp_n,OL_Gp_d)      # Transfer Function is converted to State Space
-        y = signal.lsim((A,B,C,D),u,t,X0=None,interp=1)[1]
-        kp = max(y)
-        for i in np.arange(0,len(t)):
-        
-            if y[i]>0:
-                t1 = t[i]
-                break
-    
-        for i in np.arange(0,len(t)):   
-            if y[i] > 0.6321*max(y):
-                t2 = t[i]
-                break
 
-        tau =((t2 - t1))
-        Td =(t2 - tau)
+def Cohen_Coon(OL_Gp_n,OL_Gp_d,t,SP,Contr,dt,Td):
+        tau, Td, kp = first_order_estimate(OL_Gp_n, SP, OL_Gp_d, t, dt, Td)
         a = (kp*Td)/tau
         b = Td/(Td+tau)
         CP = np.zeros(3)
@@ -96,3 +84,4 @@ def Cohen_Coon(OL_Gp_n,OL_Gp_d,t,SP,Contr,dt,Td):
 #        print ' Cohen- Coon Parameters'
 #        print CP
         return CP
+
