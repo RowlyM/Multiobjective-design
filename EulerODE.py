@@ -48,7 +48,39 @@ def Euler(A,B,C,D,t,u,DT):
 
     return y
     
+def closedloop_sim(A, B, C, D, tspan, r, DT):
+    """ Simulate the closed loop resopnse of a system with loop transfer function (L)
+    described by the State Space matrices A, B, C and D and an output delay DT
     
+    r  +  e  +-------+  y  +----+
+    --->o--->|   L   |-----| DT |-----+---> y_D 
+       -^    +-------+     +----+     |
+        |                             |
+        +-----------------------------+
+        
+    """
     
+    x = np.zeros(A.shape[0])
+    ys = np.zeros_like(tspan)
     
+    # Assume fixed step size, and start at zero, so 
+    dt = tspan[1]
     
+    for i, t in enumerate(tspan):
+        # Dead time using interpolation
+        y_D = interp(t - DT, tspan, ys)
+
+        # error calculation: wrapped in an array to produce correct product result
+        e = np.array([r[i] - y_D])
+        
+        # State space form
+        dxdt = A.dot(x) + B.dot(e)
+        y = C.dot(x) + D.dot(e)
+
+        # Store result
+        ys[i] = y
+        
+        # Euler integration
+        x = x + dxdt*dt
+    
+    return ys

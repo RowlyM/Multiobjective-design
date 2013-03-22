@@ -13,7 +13,7 @@ from plotgraphs import *
 import MODminifunc as func
 from Tuners import*
 #from DDEfunction import DDE
-from EulerODE import Euler
+from EulerODE import Euler, closedloop_sim
 from scipy import*
 # Process Transfer function 
 Gp_n = [1]       
@@ -104,7 +104,7 @@ for k in range(0,num):
     
 #    step_response = signal.lsim((A,B,C,D),u,t,X0=None,interp=1)[1]
 #    step_responseDDE = DDE(A,B,C,D,t,SP_info,DT)
-    step_responseEuler = Euler(A,B,C,D,t,u,DT)
+    step_responseEuler = closedloop_sim(A,B,C,D,t,u,DT)
     
     if (rootsA.real < 0).all():
         for i in range(0,entries):          # Stabilty of the Closed Loop is checked 
