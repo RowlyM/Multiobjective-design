@@ -10,10 +10,29 @@ from numpy import*
 import PyDDE.pydde as p
 from MODminifunc import mirror
 
-def DDE(A,B,C,D,t,u,DT,SP):
+def DDE(A,B,C,D,t,SP_info,DT):
+    SP_input = SP_info[0]
+    step_time = SP_info[1]
+    ramp_time = SP_info[2]
+    SP = SP_info[3]
+
+    
     # ddegrad code below will be explained properly on the log-book
     def ddegrad(s,c,t):
+        # Ysp is generated at time increment
+        if SP_input == 'step':
+            if t < step_time:
+                Ysp = 0
+            else:
+                Ysp = SP
+        elif SP_input == 'ramp':
+            if t < ramp_time:
+                Ysp = (SP/ramp_time)*t
+            else:
+                Ysp = SP     
+                
         NODEs = len(c)-1
+        print NODEs 
         grad = zeros(NODEs)
         for g in range(0,NODEs):
             if DT == 0:
@@ -37,7 +56,7 @@ def DDE(A,B,C,D,t,u,DT,SP):
         return array(grad)
     
     def ddesthist(g, s, c, t): # Stores past state variables and its used by the PyDDE solver
-        return (s, g)        
+        return (s, g)
    
     
     # Setting up constants that are used in the "ode_eg.initproblem"
@@ -51,6 +70,7 @@ def DDE(A,B,C,D,t,u,DT,SP):
                 cons[i,j] = C[0,j]
            
     odecons = cons.ravel()
+#    print odecons
     ini_values = zeros(len(A)*2)
     odeist = ini_values
     if len(A)==1:

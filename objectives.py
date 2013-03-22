@@ -6,7 +6,8 @@ Created on Mon Feb 18 00:23:28 2013
 """
 
 import numpy as np
-from scipy import *
+import scipy as sp
+
 def overshoot(t,x,num,entries,SP):
         # List changes
         tpr = np.zeros(num)
@@ -48,8 +49,8 @@ def ISE(t,x,num,entries,SP):
         if x[i,:] == None:
             ise[i] = None
         else:    
-            error = np.subtract(SP,x)
-            ise[i] = sum((error**2)*t[1])
+            error = np.subtract(SP,x[i,:])
+            ise[i] = sp.integrate.simps((error**2),t)
     return ise
    
 def IAE(t,x,num,entries,SP):
@@ -58,8 +59,8 @@ def IAE(t,x,num,entries,SP):
         if x[i,:] == None:
             iae[i] = None
         else:
-            error = abs(np.subtract(SP,x))
-            ise[i] = sum(error*t[1])
+            error = abs(np.subtract(SP,x[i,:]))
+            ise[i] = sp.integrate.simps(error,t)
     return ise
     
 def ITAE(t,x,num,entries,SP):
@@ -68,6 +69,6 @@ def ITAE(t,x,num,entries,SP):
         if x[i,:] == None:
             itae[i] = None
         else:
-            error = np.multiply(t,abs(np.subtract(SP,x)))
-            itae[i] = sum(error*t[1])
+            error = np.multiply(t,abs(np.subtract(SP,x[i,:])))
+            itae[i] = sp.integrate.simps(error,t)
     return ise

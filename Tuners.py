@@ -7,11 +7,11 @@ Created on Sat Feb 09 10:34:56 2013
 import numpy as np
 from scipy import signal
 import MODminifunc as func
+from EulerODE import Euler
 
-def first_order_estimate(OL_Gp_n, SP, OL_Gp_d, t, dt, Td):
-    u = func.Step2(t,SP,dt,Td)
-    (A,B,C,D) =signal.tf2ss(OL_Gp_n,OL_Gp_d)      # Transfer Function is converted to State Space
-    y = signal.lsim((A,B,C,D),u,t,X0=None,interp=1)[1]
+def first_order_estimate(Gp_n,Gp_d,t,u,Contr_type,DT):
+    (A,B,C,D) =signal.tf2ss(Gp_n,Gp_d)      # Transfer Function is converted to State Space
+    y =Euler(A,B,C,D,t,u,DT)
     kp = max(y)
     for i in np.arange(0,len(t)):
 
@@ -29,9 +29,9 @@ def first_order_estimate(OL_Gp_n, SP, OL_Gp_d, t, dt, Td):
     return tau, Td, kp
 
 
-def ZN(OL_Gp_n,OL_Gp_d,t,SP,Contr,dt,Td):
-        
-        tau, Td, kp = first_order_estimate(OL_Gp_n, SP, OL_Gp_d, t, dt, Td)
+def ZN(Gp_n,Gp_d,t,u,Contr_type,DT):
+        Contr = Contr_type
+        tau, Td, kp = first_order_estimate(Gp_n,Gp_d,t,u,Contr_type,DT)
         CP = np.zeros(3)
 #        print tau,Td,kp
         
@@ -55,8 +55,9 @@ def ZN(OL_Gp_n,OL_Gp_d,t,SP,Contr,dt,Td):
 #        print CP    
         return CP
 
-def Cohen_Coon(OL_Gp_n,OL_Gp_d,t,SP,Contr,dt,Td):
-        tau, Td, kp = first_order_estimate(OL_Gp_n, SP, OL_Gp_d, t, dt, Td)
+def Cohen_Coon(Gp_n,Gp_d,t,u,Contr_type,DT):
+        Contr = Contr_type
+        tau, Td, kp = first_order_estimate(Gp_n,Gp_d,t,u,Contr_type,DT)
         a = (kp*Td)/tau
         b = Td/(Td+tau)
         CP = np.zeros(3)
@@ -77,10 +78,6 @@ def Cohen_Coon(OL_Gp_n,OL_Gp_d,t,SP,Contr,dt,Td):
             CP[1] = (2.5-2*b)/(1-0.39*b)*Td
             CP[2] = (.37-.37*b)/(1-0.81*b)*Td
             
-#        elif Contr == 'PD':
-#            print 'PD Controller'
-#            CP[0] = (1.24/a)*(1+(0.13*b)/(1-b))
-#            CP[2] = (.27-.36*b)/(1-0.87*b)*Td
 #        print ' Cohen- Coon Parameters'
 #        print CP
         return CP

@@ -15,6 +15,7 @@ from Tuners import*
 #from DDEfunction import DDE
 from EulerODE import Euler, closedloop_sim
 from scipy import*
+
 # Process Transfer function 
 Gp_n = [1]       
 Gp_d = [1,5,6]
@@ -23,7 +24,7 @@ Gp_d = [1,5,6]
 SP = 2.                   # Set Point            
 tfinal = 100        # simulation period
 dt = .1
-DT =1          # Dead time (s)  
+DT =6         # Dead time (s)  
 t = np.arange(0, tfinal, dt)
 entries = len(t)
 num =100           # number of tuning constant sets
@@ -32,7 +33,7 @@ por = np.zeros(num)             # What are these two variables?
 tr = np.zeros(num)
 
 # Controller choice
-Contr_type = 'PID'               # Choose controller by typing 'P' , 'PI' or 'PID'
+Contr_type = 'PI'               # Choose controller by typing 'P' , 'PI' or 'PID'
 if Contr_type == 'P':
     Controller = 1
 elif Contr_type == 'PI':
@@ -63,8 +64,8 @@ kcst = np.arange(0,60,dt)
 tist =kp*kcst*A**2/(((A*B) - C - (kp*kcst))*(C + (kp*kcst)))
 
 
-kczn ,tizn,tdzn = ZN(Gp_n,Gp_d,t,SP,Contr_type,dt,DT) # Ziegler-Nichols settings via function ZN
-kcch ,tich,tdch = Cohen_Coon(Gp_n,Gp_d,t,SP,Contr_type,dt,DT)  
+kczn ,tizn,tdzn = ZN(Gp_n,Gp_d,t,u,Contr_type,DT) # Ziegler-Nichols settings via function ZN
+kcch ,tich,tdch = Cohen_Coon(Gp_n,Gp_d,t,u,Contr_type,DT)  
 
 ## System responce
 for k in range(0,num):

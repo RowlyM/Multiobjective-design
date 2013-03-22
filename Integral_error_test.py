@@ -15,7 +15,7 @@ Gp_n = [1]
 Gp_d = [1,1]
 Gc_n = [1]
 Gc_d = [1]
-t = np.arange(0,10,0.0001)
+t = np.arange(0,10,0.1)
 SP = np.ones(len(t))
 OL_TF_n = np.polymul(Gp_n, Gc_n)
 OL_TF_d = np.polymul(Gc_d,Gp_d)
@@ -25,17 +25,17 @@ step_response = signal.lsim((A,B,C,D),SP,t,X0=None,interp=1)[1]
 
 def ISE(SP,y,t):
     error = np.subtract(SP,y)
-    ISE = sum((error**2)*t[1])
+    ISE = integrate.simps((error**2),t)
     return ISE
    
 def IAE(SP,y,t):
     error = abs(np.subtract(SP,y))
-    IAE = sum(error*t[1])
+    IAE = integrate.simps(error,t)
     return IAE
     
 def ITAE(SP,y,t):
     error = np.multiply(t,abs(np.subtract(SP,y)))
-    ITAE = sum(error*t[1])
+    ITAE = integrate.simps(error,t)
     return ITAE
 print 'ISE results'    
 print (integrate.quad(lambda (t):(1-(1-e**-t))**2,0,100)[0])

@@ -10,24 +10,24 @@ Created on Mon Feb 18 00:23:28 2013
 import numpy as np
 import matplotlib.pyplot as plt
 from operator import itemgetter
-import plotfuncs as pltf
+import objectives as obj
 import pareto
 
 def plotgraphs(kc,ti,x,num,entries,t,tfinal,dt,SP,kcst,tist):
     
 
-    por2 = pltf.overshoot(t,x,num,entries,SP)
+    por2 = obj.overshoot(t,x,num,entries,SP)
     por = por2['por']
     tpr = por2['tpr']
     
 #   calculates the risetime
    
-    tr= pltf.risetime(t,x,num,entries,SP)
+    tr= obj.risetime(t,x,num,entries,SP)
     SSoffset = ~np.isneginf(por)
     UNSTABLE = ~np.isnan(por)  
          
 #   ISE
-    ISE = pltf.ISE(t,x,num,entries,SP)
+    ISE = obj.ISE(t,x,num,entries,SP)
 
     
 
