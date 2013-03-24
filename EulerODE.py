@@ -78,7 +78,7 @@ def closedloop_sim(A, B, C, D, tspan, r, DT):
         y = C.dot(x) + D.dot(e)
 
         # Store result
-        ys[i] = y
+        ys[i] = y_D
         
         # Euler integration
         x = x + dxdt*dt
