@@ -6,12 +6,11 @@ Created on Sat Feb 09 10:34:56 2013
 """
 import numpy as np
 from scipy import signal
-import MODminifunc as func
-from EulerODE import Euler
+from EulerODE import closedloop_sim,Euler
 
 def first_order_estimate(Gp_n,Gp_d,t,u,Contr_type,DT):
     (A,B,C,D) =signal.tf2ss(Gp_n,Gp_d)      # Transfer Function is converted to State Space
-    y =Euler(A,B,C,D,t,u,DT)
+    y = Euler(A,B,C,D,t,u,DT)
     kp = max(y)
     for i in np.arange(0,len(t)):
 
@@ -23,6 +22,7 @@ def first_order_estimate(Gp_n,Gp_d,t,u,Contr_type,DT):
         if y[i] > 0.6321*max(y):
             t2 = t[i]
             break
+        
 
     tau =((t2 - t1))
     Td =(t2 - tau)

@@ -24,7 +24,7 @@ Gp_d = [1,5,6]
 SP = 2.                   # Set Point            
 tfinal = 100        # simulation period
 dt = .1
-DT =6         # Dead time (s)  
+DT = 7        # Dead time (s)  
 t = np.arange(0, tfinal, dt)
 entries = len(t)
 num =100           # number of tuning constant sets
@@ -105,7 +105,7 @@ for k in range(0,num):
     
 #    step_response = signal.lsim((A,B,C,D),u,t,X0=None,interp=1)[1]
 #    step_responseDDE = DDE(A,B,C,D,t,SP_info,DT)
-    step_responseEuler = closedloop_sim(A,B,C,D,t,u,DT)
+    step_responseEuler = Euler(A,B,C,D,t,u,DT)
     
     if (rootsA.real < 0).all():
         for i in range(0,entries):          # Stabilty of the Closed Loop is checked 
