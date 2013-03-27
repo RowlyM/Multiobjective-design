@@ -31,7 +31,7 @@ def Step(t,step_time,SP):
     Ysp = np.zeros(len(t))
     for i in np.arange(0,len(t)):
         if t[i]< step_time:
-            Ysp = 0
+            Ysp[i] = 0
         else:
             Ysp[i] = SP
     return Ysp

@@ -22,8 +22,8 @@ def plotgraphs(kc,ti,x,num,entries,t,tfinal,dt,SP,kcst,tist):
 #   calculates the risetime
    
     tr= obj.risetime(t,x,num,entries,SP)
-    SSoffset = ~np.isneginf(por)
-    UNSTABLE = ~np.isnan(por)  
+    SSoffset = np.isneginf(por)
+    UNSTABLE = np.isnan(por)  
          
 #   ISE
     ISE = obj.ISE(t,x,num,entries,SP)
@@ -44,7 +44,6 @@ def plotgraphs(kc,ti,x,num,entries,t,tfinal,dt,SP,kcst,tist):
    
     front = p.data
     idx, xd, yd = map(np.array, zip(*front))
-    print xd
     sortidx = np.argsort(xd)
     xd = xd[sortidx]
     yd = yd[sortidx] 
@@ -56,9 +55,9 @@ def plotgraphs(kc,ti,x,num,entries,t,tfinal,dt,SP,kcst,tist):
     plt.matplotlib.rc('font', **font)
     #ax1
     ax1 = fig.add_subplot(2,2,1)
-#    linea = ax1.plot(kc[~UNSTABLE],ti[~UNSTABLE], 'w.') # adds ustables points
-#    lineb = ax1.plot(kcst,tist,'k-')
-    linee = ax1.plot(kc[~SSoffset],ti[~SSoffset],'g+') 
+    linea = ax1.plot(kc[UNSTABLE],ti[UNSTABLE], 'r+') # adds ustables points
+    lineb = ax1.plot(kcst,tist,'k-')
+    linee = ax1.plot(kc[SSoffset],ti[SSoffset],'g+') 
     line1, = ax1.plot(kc[goodpoints], ti[goodpoints], 'wo',picker = 5,) # adds good points
     linec = ax1.plot(kc[idx], ti[idx],'bo') # from pareto.data
     lined = ax1.plot(kc[num-2],ti[num-2],'ks') # Ziegler Nichos settings
@@ -73,9 +72,9 @@ def plotgraphs(kc,ti,x,num,entries,t,tfinal,dt,SP,kcst,tist):
     line222=ax2.plot(xd, yd, 'bo-')
     line22 = ax2.plot(por[zns-2],tr[zns-2],'ks')
     linecc2 = ax2.plot(por[zns-1],tr[zns-1],'gs') # cohen coon settings
-#    plt.setp((linea,lineb,linee,line1),linewidth = 2.0)
-#    plt.figlegend((linea,lineb,linec,lined,lineco,linetl,linee,line1),('Unstable','Stabilty limit','Pareto points','Z&N settings','Cohen Coon','Tyreus & Luyben','S/S offset','Stable'),'upper right',borderaxespad=0.)
-    
+    plt.setp((linea,lineb,linee,line1),linewidth = 2.0)
+    plt.figlegend((linea,lineb,linec,lined,lineco,linetl,linee,line1),('Unstable','Stabilty limit','Pareto points','Z&N settings','Cohen Coon','Tyreus & Luyben','S/S offset','Stable'),'upper right',borderaxespad=0.)
+    plt.axis([-0.2,1, 0,40])
     plt.ylabel('risetime (s)',fontsize = 'large')
     plt.xlabel('overshoot ratio',fontsize = 'large')
     
@@ -84,7 +83,7 @@ def plotgraphs(kc,ti,x,num,entries,t,tfinal,dt,SP,kcst,tist):
     plt.ylabel('x',fontsize = 12)
     plt.xlabel('time (s)',fontsize = 12)
     plt.axis([0,tfinal, 0,SP*2]) ### 
-    ax3.text(0.02,0.5,'Click on the overshoot vs risetime plot to obtain the time response',fontsize = 13,color = 'red')
+    ax3.text(0.02,SP,'Click on the overshoot vs risetime plot to obtain the time response',fontsize = 13,color = 'red')
      
 # graphical interaction 
     class timeresponse:
@@ -123,7 +122,7 @@ def plotgraphs(kc,ti,x,num,entries,t,tfinal,dt,SP,kcst,tist):
             ax3.cla()
             plt.ylabel('y',fontsize = 12)
             plt.xlabel('time (s)',fontsize = 12)
-            plt.axis([0,tfinal, 0,SP*2]) #####Change of response graph y-axis
+#            plt.axis([0,tfinal, 0,SP*2]) #####Change of response graph y-axis
             ax3.plot(t,yt,tpr[pstn],((por[pstn] + 1)*SP),'bo')
             ax3.axhline(y=SP,color ='black',linestyle ='--')
             rr = np.linspace(0,SP)
@@ -168,7 +167,7 @@ def plotgraphs(kc,ti,x,num,entries,t,tfinal,dt,SP,kcst,tist):
             ax3.cla()
             plt.ylabel('x')
             plt.xlabel('time (s)')
-            plt.axis([0,tfinal, 0,SP*2]) #######
+#            plt.axis([0,tfinal, 0,SP*2]) #######
             ax3.plot(t,yt,tpr[p2],((por[p2] + 1)*SP),'bo',linewidth = 2.0)
             ax3.axhline(y=SP,color ='black',linestyle ='--')
             rr = np.linspace(0,SP) ##########

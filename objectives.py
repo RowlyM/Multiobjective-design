@@ -17,7 +17,11 @@ def overshoot(t,x,num,entries,SP):
                 por[u]= None
                 tpr[u] = None
             else:
-                por[u] = ((np.max(x[u][:]))- SP)/SP # Calculates overshoot ratio = (max-SP)/SP
+                if (((np.max(x[u][:]))- SP)/SP)<(SP/2):
+                    
+                    por[u] = ((np.max(x[u][:]))- SP)/SP # Calculates overshoot ratio = (max-SP)/SP
+                else:
+                    por[u] = np.NaN
                 for g in range(0,entries):
                     if x[u][g] == np.max(x[u][:]):
                         tpr[u] = t[g]               # Finds the time where the maximum is
@@ -25,6 +29,10 @@ def overshoot(t,x,num,entries,SP):
                     if por[u] < 0:
                         por[u] = np.NINF            
                         tpr[u] = np.NINF
+                        
+                    if por[u] == None:
+                        tpr[u] == None
+                    
                         
         return por,tpr
         

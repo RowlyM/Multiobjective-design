@@ -17,14 +17,14 @@ from EulerODE import Euler, closedloop_sim
 from scipy import*
 
 # Process Transfer function 
-Gp_n = [1]       
-Gp_d = [1,5,6]
+Gp_n = [0.125]       
+Gp_d = [1,3,3,1]
                           
 # Simulation Settings                          
 SP = 2.                   # Set Point            
 tfinal = 100        # simulation period
 dt = .1
-DT = 7        # Dead time (s)  
+DT = 1       # Dead time (s)  
 t = np.arange(0, tfinal, dt)
 entries = len(t)
 num =100           # number of tuning constant sets
