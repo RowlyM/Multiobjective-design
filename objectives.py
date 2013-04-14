@@ -17,7 +17,7 @@ def overshoot(t,x,num,entries,SP):
                 por[u]= None
                 tpr[u] = None
             else:
-                if (((np.max(x[u][:]))- SP)/SP)<(SP/2):
+                if (((np.max(x[u][:]))- SP)/SP)< .6:
                     
                     por[u] = ((np.max(x[u][:]))- SP)/SP # Calculates overshoot ratio = (max-SP)/SP
                 else:
@@ -57,7 +57,7 @@ def ISE(t,x,num,entries,SP):
         if x[i][:] == None:
             ise[i] = None
         else:    
-            error = np.subtract(SP,x[i,:])
+            error = np.subtract(SP,x[i][:])
             ise[i] = sp.integrate.simps((error**2),t)
     return ise
    
@@ -67,9 +67,9 @@ def IAE(t,x,num,entries,SP):
         if x[i][:] == None:
             iae[i] = None
         else:
-            error = abs(np.subtract(SP,x[i,:]))
-            ise[i] = sp.integrate.simps(error,t)
-    return ise
+            error = abs(np.subtract(SP,x[i][:]))
+            iae[i] = sp.integrate.simps(error,t)
+    return iae
     
 def ITAE(t,x,num,entries,SP):
     itae = np.zeros(num)
@@ -77,6 +77,6 @@ def ITAE(t,x,num,entries,SP):
         if x[i][:] == None:
             itae[i] = None
         else:
-            error = np.multiply(t,abs(np.subtract(SP,x[i,:])))
+            error = np.multiply(t,abs(np.subtract(SP,x[i][:])))
             itae[i] = sp.integrate.simps(error,t)
-    return ise
+    return itae
