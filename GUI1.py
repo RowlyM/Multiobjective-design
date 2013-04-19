@@ -13,6 +13,7 @@ import pareto
 from scipy import signal
 from scipy import linalg
 from EulerODE import Euler
+from Optimizer import Optimize
 import MODminifunc as func
 
 from matplotlib.lines import Line2D
@@ -23,6 +24,8 @@ from matplotlib.widgets import Button
 from matplotlib.widgets import RadioButtons
 
 from matplotlib.patches import Polygon
+
+
 Gp_n = [.125]       
 Gp_d = [1,3,3,1]
 SP = 2.                   # Set Point            
@@ -456,6 +459,16 @@ fig.canvas.mpl_connect('button_press_event',click.pick )
 # System change button 
 System = plt.axes([0.25, .92, 0.1, 0.05])
 bprev = Button(System, 'System Setup')
+    
+def Opt(tfinal, dt, Gp_n, Gp_d, SP, DT,u):
+     Optimize(tfinal, dt, Gp_n, Gp_d, SP, DT,u)
+     return True
+# Mopsocd Button
+Mopsocd = plt.axes([0.7, .92, 0.1, 0.05])
+Mop_button = Button(Mopsocd, 'Mopso-cd')
+Mop_button.on_clicked(Opt(tfinal, dt, Gp_n, Gp_d, SP, DT,u))
+    
+
 
 # Objective radio button
 axcolor = 'lightgreen'
@@ -472,4 +485,6 @@ def colorfunc(label):
         redraw_ax4()
     plt.draw()
 radio.on_clicked(colorfunc)
+    
+
 plt.show()
