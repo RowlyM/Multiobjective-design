@@ -4,9 +4,8 @@ Created on Wed Apr 17 14:25:13 2013
 
 @author: Rowly
 """
-import numpy as np
+#import matplotlib.pyplot as plt
 import Simulator as sim
-import MODminifunc as func
 import Mopsocd_setup_window as mop
 from pymopsocd import *
 def Optimize(tfinal, dt, Gp_n, Gp_d, SP, DT,u):    
@@ -16,6 +15,7 @@ def Optimize(tfinal, dt, Gp_n, Gp_d, SP, DT,u):
     class problemcontrol(problem):
         def __init__(self, kc_range, ti_range, td_range):
             self.xrange = [kc_range[0], ti_range[0],td_range[0]]
+            self.xrange = [kc_range[0], ti_range[0],[0,0]]
             self.bigvalues = array([1.7 , 90])
             self.size = len(self.xrange)
             self.obnames = ['Rise time', 'Overshoot']
@@ -48,6 +48,5 @@ def Optimize(tfinal, dt, Gp_n, Gp_d, SP, DT,u):
     #plt.matplotlib.rc('font', **font)
     #plt.figure().set_facecolor('white')
     ##plt.plot(*zip(*[e.value for e in theswarm.allevals]), color='white', marker='o', linestyle='')
-    
-#    objplot = plt.plot(*zip(*sorted([list(e.value) for e in theswarm.archive.list if not isnan(e.value).all()])), color='red',linewidth = 2.5)
-#    return objplot             
+#    plt.show()
+    return (zip(*sorted([list(e.value) for e in theswarm.archive.list if not isnan(e.value).all()])))

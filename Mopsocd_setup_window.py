@@ -7,6 +7,7 @@ Created on Thu Apr 18 12:52:27 2013
 
 import Tkinter as tk
 import numpy as np
+import tkFont
 def cc():
     
     Nparticles = []
@@ -20,7 +21,7 @@ def cc():
     class Optimizer_setup(tk.Canvas):
         def __init__(self, master = None):
             tk.Canvas.__init__(self, master)
-            self.grid(ipadx =70, ipady=100)
+            self.grid(ipadx =70, ipady=30)
             self.Nparticles()
             self.Archivesize()
             self.Maxgen()
@@ -37,15 +38,15 @@ def cc():
             self.create_text((40,158),activefill="red",text="kc range",fill="black")
             self.create_text((40,188),activefill="red",text="ti range",fill="black")
             self.create_text((40,218),activefill="red",text="td range",fill="black")
-            self.create_text((110,30),activefill="red",text="MOPSO-cd PARAMETERS",fill="black")
-            self.create_text((400,30),activefill="red",text="OBJECTIVES",fill="black")
+            self.create_text((110,30),activefill="red",text="MOPSO-cd PARAMETERS",font =tkFont.Font(weight = 'bold') )
+            self.create_text((400,30),activefill="red",text="OBJECTIVES",font =tkFont.Font(weight = 'bold') )
             self.create_text((300,98),activefill="red",text="X axis objective",fill="black")
             self.create_text((300,158),activefill="red",text="Y axis objective",fill="black")
             
         def Nparticles(self):
             self.Nentry = tk.Entry(self,width = 10,justify = tk.CENTER)
             self.Nentry.place(x= 100, y = 60)
-            self.Nentry.insert(0,"100")
+            self.Nentry.insert(0,"50")
             
         def Archivesize(self):
             self.Archentry = tk.Entry(self,width = 10,justify = tk.CENTER)
@@ -55,7 +56,7 @@ def cc():
         def Maxgen(self):
             self.Maxentry = tk.Entry(self,width = 10,justify = tk.CENTER)
             self.Maxentry.place(x= 100, y = 120)
-            self.Maxentry.insert(0,"100")
+            self.Maxentry.insert(0,"50")
             
         def Para_kc_range(self):
             self.kcentry= tk.Entry(self,width = 10,justify = tk.CENTER)
@@ -82,29 +83,28 @@ def cc():
             td_range.append( eval(self.tdentry.get()))
             Xobjective.append(self.varx.get())
             Yobjective.append(self.vary.get())
-#            self.quit()
         def Drop(self):
             optionList = ('Risetime', 'Overshoot ratio', 'ISE', 'IAE', 'ITAE')
             self.varx = tk.StringVar()
             self.varx.set(optionList[0])
             self.Xobj = tk.OptionMenu(self,self.varx,*optionList)
-            self.Xobj.place(x= 400, y = 85)
+            self.Xobj.place(x= 360, y = 85)
         def Drop2(self):
             optionList = ('Risetime', 'Overshoot ratio', 'ISE', 'IAE', 'ITAE')
             self.vary = tk.StringVar()
             self.vary.set(optionList[1])
             self.Yobj = tk.OptionMenu(self,self.vary,*optionList)
-            self.Yobj.place(x= 400, y = 145)
+            self.Yobj.place(x= 360, y = 145)
         def Run(self):
             self.runb= tk.Button(self, width = 10,text ='Run', command = self.Get_entries)
-            self.runb.place(x= 390, y = 250)
+            self.runb.place(x= 390, y = 290)
             
         def Close(self):
             self.quitb = tk.Button(self, width = 10,text ='Cancel', command = self.quit)
-            self.quitb.place(x= 290, y = 250)    
+            self.quitb.place(x= 290, y = 290)    
             
                  
     window = Optimizer_setup()
-    
+    window.master.title('Mopso-cd setup')
     window.mainloop()     
     return   Nparticles, archivesize, maxgen, kc_range, ti_range, td_range ,Xobjective, Yobjective 

@@ -1,51 +1,50 @@
 # -*- coding: utf-8 -*-
 """
-Created on Sat Mar 23 09:49:59 2013
 
-@author: Rowly
+@author: Rowly Mudzhiba
+
 """
+######################## modules ##################################################
 import numpy as np
 import matplotlib.pyplot as plt 
-#from Horizontal_cursor_guide import MultiCursor
-from operator import itemgetter
 import objectives as obj
 import pareto
+import MODminifunc as func
+
+from operator import itemgetter
 from scipy import signal
 from scipy import linalg
 from EulerODE import Euler
 from Optimizer import Optimize
-import MODminifunc as func
-
+from Sys_setup_window import sys_setup
 from matplotlib.lines import Line2D
 from matplotlib.artist import Artist
 from matplotlib.mlab import dist_point_to_segment
-
-from matplotlib.widgets import Button
-from matplotlib.widgets import RadioButtons
-
+from matplotlib.widgets import Button, RadioButtons
 from matplotlib.patches import Polygon
 
-
-Gp_n = [.125]       
+###################### Default System parameters #####################################
+Gp_n = [.125]     
 Gp_d = [1,3,3,1]
-SP = 2.                   # Set Point            
+SP = 1.                   # Set Point            
 tfinal = 100        # simulation period
 dt = .1
-DT = 1       # Dead time (s)  
+DT = 0       # Dead time (s)  
 t = np.arange(0, tfinal, dt)
 entries = len(t)
 
 SP_input = 'step'           # Choose Set point input by typing 'step' or 'ramp'
 step_time  = 0.
-ramp_time = 5
-u = func.Ramp(t,ramp_time,SP)
-#u = func.Step(t,step_time,SP)           
+ramp_time = 5.
+u = func.Step(t,step_time,SP)           
 SP_info = [SP_input,step_time, ramp_time,SP]
 
+
+#################### Initializing plots #############################################
 #Kc Vs ti parameters
 fig=plt.figure()
 ax1 = fig.add_subplot(231)
-plt.axis([0,60, 0,30])
+plt.axis([0,60, 0,60])
 ax1.plot(None,None)
 
 kc = []
@@ -55,20 +54,22 @@ plt.ylabel(r'$K_C$',fontsize = 'large')
 plt.xlabel(r'$\tau_I$',fontsize = 'large')
 # Kc vs td parameters
 ax2= fig.add_subplot(232, sharey = ax1)
-plt.axis([0,1, 0,25])
+plt.axis([0,10, 0,60])
 plt.ylabel(r'$K_C$',fontsize = 'large')
 plt.xlabel(r'$\tau_D$',fontsize = 'large')
-ax2.text(4,SP,'drag along the axis ',fontsize = 16,color = 'red')
+#ax2.text(4,SP,'drag along the axis ',fontsize = 16,color = 'red')
+
 #plot3
 ax3= fig.add_subplot(233)
-plt.axis([-0.2,1, 0,10])
 plt.ylabel('risetime (s)',fontsize = 'large')
 plt.xlabel('overshoot ratio',fontsize = 'large')
+Mop_points = (None,None)
 por = []
 tpr = []
 ISE = []
 IAE = []
 ITAE = []
+
 tr = []
 xd = []
 yd = []
@@ -89,12 +90,16 @@ SSoffset_out = [0]
 UNSTABLE_out = [0]
 goodpoints_out = [0]
 idx_out = [0]
+Bidx_out = [0]
 por_out = [0]
 ISE_out, IAE_out, ITAE_out = [0],[0],[0]
 tr_out = [0]
 xd_out = [0]
 yd_out = [0]
-Bxd_out, Byd_out =[0], [0] 
+Bxd_out, Byd_out =[0], [0]
+
+
+##################################### Plotting functions ############################### 
 def redraw_ax1():
     kc1,ti1= np.array(kc),np.array(ti)
     ax1 = fig.add_subplot(231)
@@ -103,16 +108,17 @@ def redraw_ax1():
     line3 = ax1.plot(ti1[goodpoints_out], kc1[goodpoints_out], 'wo',picker = 5,) # adds good points
     line4 = ax1.plot(ti1[idx_out], kc1[idx_out],'bo') # from pareto.data
 #        plt.figlegend((line1,line2,line3,line4,),('S/SOffset','Unstable','Stable points','Pareto points'),'upper right',borderaxespad=0.)
-    ax1.axis([0,60, 0,25])
+    ax1.axis([0,60, 0,60])
     plt.ylabel(r'$K_C$',fontsize = 'large')
     plt.xlabel(r'$\tau_I$',fontsize = 'large')
  
 def redraw_ax3():
     ax3= fig.add_subplot(233)
     pline = ax3.plot(por_out, tr_out, 'wo',picker = 5,)
+    ax3.plot(*Mop_points, color='red',linewidth = 2.5)
     ppline.append(pline)
     ax3.plot(xd_out, yd_out, 'bo-')
-    ax3.axis([-0.2,1, 0,10])
+#    ax3.axis([-0.2,1, None,None])
     plt.ylabel('risetime (s)',fontsize = 'large')
     plt.xlabel('overshoot ratio',fontsize = 'large')
 def redraw_ax3_ISE():
@@ -131,7 +137,9 @@ def redraw_ax4():
     ax4.plot(yy,rr,'k--')
     plt.ylabel('y',fontsize = 12)
     plt.xlabel('time (s)',fontsize = 12)    
+    plt.axis([0,tfinal, 0,SP*2]) 
     
+#################################### Handles clicks on objective plot(ax3) ##############################     
 class Pareto_window:
 
     def __init__(self):
@@ -182,6 +190,7 @@ Pclick = Pareto_window()
    
 fig.canvas.mpl_connect('pick_event',Pclick.pareto_point ) 
 
+############################ Draws and enables dragging points on 'kc vs td' plot(ax2) ###################################
 class PolygonInteractor:
     """
     An polygon editor.
@@ -268,8 +277,6 @@ class PolygonInteractor:
             'whenever a mouse button is released'
             if not self.showverts: return
             if event.button != 1: return
-        
-            
             self._ind = None
             
 
@@ -300,8 +307,6 @@ class PolygonInteractor:
                             list(self.poly.xy[i:]))
                         self.line.set_data(zip(*self.poly.xy))
                         break
-
-
         self.canvas.draw()
 
 
@@ -313,8 +318,6 @@ class PolygonInteractor:
             if event.inaxes is None: return
             if event.button != 1: return
             x,y = event.xdata, event.ydata
-    
-#            self.poly.xy[self._ind] = x,y
             self.poly.xy[self._ind] = x,kc[self._ind]
             self.line.set_data(zip(*self.poly.xy))
             self.canvas.restore_region(self.background)
@@ -324,10 +327,10 @@ class PolygonInteractor:
             td[self._ind] = event.xdata
             polyx[:], ployy[:] = zip(*self.poly.xy)
             self.ax.cla()
-        
+
+################################ Handles clicking on the 'kc and ti' plot(ax1) ##############################      
 class Parameter_window:
     def __init__(self):
-#          self.PolygonInteractor = PolygonInteractor
           self.ax1 = redraw_ax1
           self.ax3 = redraw_ax3
           self.ax4 = redraw_ax4
@@ -338,28 +341,32 @@ class Parameter_window:
                                       color='orange', visible=False)
 
     def pick( self, event):
-        
-        # Clearing all plots
-        ax1.cla()
-#        ax2.cla()
-        ax3.cla()
-        ax4.cla()
         if ax1.contains(event)[0] == True:
-            plot1_x = event.xdata
-            plot1_y = event.ydata
-            self.Stability_evaluation( plot1_x, plot1_y)
+            # Clearing all plots
+            ax1.cla()
+            ax3.cla()
+            ax4.cla()
+            if ax1.contains(event)[0] == True:
+                plot1_x = event.xdata
+                plot1_y = event.ydata
+                self.Stability_evaluation( plot1_x, plot1_y)
             
      
     def Stability_evaluation( self, p1, p2):
-        
+        global t,u,entries
+        t = np.arange(0, tfinal, dt)
+        entries = len(t)
+        u = func.Step(t,step_time,SP) 
         kc.append( p2)
         ti.append( p1)
         td.append(0)
+#        print GP_n,Gp_d,tfinal,dt,DT,SP,step_time,ramp_time,SP_input
         polyx.append(0)
         ployy.append(kc[-1])
         poly = Polygon(list(zip(polyx, ployy)), animated=True)
         ax2.add_patch(poly)
         p = PolygonInteractor(ax2, poly)
+        print GP_n,Gp_d,tfinal,dt,DT,SP,step_time,ramp_time,SP_input
         Gc_n = [kc[-1]*ti[-1]*td[-1],(kc[-1]*ti[-1]),kc[-1]]
         Gc_d = [ti[-1],0]
         OL_TF_n = np.polymul( Gp_n, Gc_n)
@@ -428,8 +435,8 @@ class Parameter_window:
         # risetime vs ISE
         B = pareto.domset([itemgetter(1), itemgetter(2)], zip(idx, ISE, tr)) 
         Bfront = B.data
-        idx, Bxd, Byd = map(np.array, zip(*Bfront))
-        idx_out[0], Bxd_out[0], Byd_out[0] = idx, Bxd, Byd
+        Bidx, Bxd, Byd = map(np.array, zip(*Bfront))
+        Bidx_out[0], Bxd_out[0], Byd_out[0] = Bidx, Bxd, Byd
         sortidx = np.argsort(Bxd)
         Bxd = Bxd[sortidx]
         Byd = Byd[sortidx]
@@ -437,43 +444,56 @@ class Parameter_window:
         
 
     def re_draw(self):
-
         
         self.ax1()
-
-        
         # Objective plot (ax3)
         self.ax3()
         
         # Systems response plot (ax4)
         self.ax4()
-
         fig.canvas.draw() 
-        
-     
-#multi = MultiCursor(fig.canvas, (ax1, ax2), color='r', lw=2)
 
 click = Parameter_window()
-
 fig.canvas.mpl_connect('button_press_event',click.pick )
-# System change button 
-System = plt.axes([0.25, .92, 0.1, 0.05])
-bprev = Button(System, 'System Setup')
-    
-def Opt(tfinal, dt, Gp_n, Gp_d, SP, DT,u):
-     Optimize(tfinal, dt, Gp_n, Gp_d, SP, DT,u)
-     return True
-# Mopsocd Button
-Mopsocd = plt.axes([0.7, .92, 0.1, 0.05])
-Mop_button = Button(Mopsocd, 'Mopso-cd')
-Mop_button.on_clicked(Opt(tfinal, dt, Gp_n, Gp_d, SP, DT,u))
-    
 
+######################################### Buttons ######################################################
+# System change button 
+def step_window(self):
+    global GP_n,Gp_d,tfinal,dt,DT,SP,step_time,ramp_time,SP_input
+    GP_n,Gp_d,tfinal,dt,DT,SP,step_time,ramp_time,SP_input = sys_setup()
+
+System = plt.axes([0.25, .92, 0.1, 0.05])
+sysbutton = Button(System, 'System Setup')
+sysbutton.on_clicked(step_window)
+
+# Initial point generation
+def Point_gen(self):
+    return
+#    global kc,ti,td
+#    kc,ti,td  = func.RPG(20,3) 
+#    redraw_ax3()
+#    fig.canvas.draw()
+#
+Ppoints = plt.axes([0.125, .92, 0.1, 0.05])
+pointbutton = Button(Ppoints, 'Generate')
+pointbutton.on_clicked(Point_gen)
+     
+# Mopsocd Button
+def Opt(self):
+     global Mop_points
+     Mop_points = Optimize(tfinal, dt, Gp_n, Gp_d, SP, DT,u)
+     redraw_ax3()
+     fig.canvas.draw()
+     
+Mopsocd = plt.axes([0.75, .92, 0.1, 0.05])
+Mop_button = Button(Mopsocd, 'Mopso-cd')
+Mop_button.on_clicked(Opt)
+    
 
 # Objective radio button
 axcolor = 'lightgreen'
-rax = plt.axes([0.91, 0.6, 0.07, 0.15],axisbg=axcolor)
-radio = RadioButtons(rax, ('RT vs OSR', 'ISE','IAE','ITAE'), activecolor= 'red')
+rax = plt.axes([0.91, 0.6, 0.07, 0.15])
+radio = RadioButtons(rax, ('RT vs OSR', 'ISE','IAE','ITAE'))
 def colorfunc(label):
     if label == 'RT vs OSR':
         redraw_ax1()
@@ -486,5 +506,4 @@ def colorfunc(label):
     plt.draw()
 radio.on_clicked(colorfunc)
     
-
 plt.show()
