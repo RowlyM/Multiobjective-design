@@ -24,13 +24,7 @@ def plotgraphs(kc,ti,x,num,entries,t,tfinal,dt,SP,kcst,tist):
     tr= obj.risetime(t,x,num,entries,SP)
     SSoffset = np.isneginf(por)
     UNSTABLE = np.isnan(por)  
-         
-#   ISE
     ISE = obj.ISE(t,x,num,entries,SP)
-
-    
-
-
     goodpoints = ~(np.isnan(tr)| np.isnan(por)|np.isneginf(por))
     idx = np.arange(0,num)
     tr = tr[goodpoints]
@@ -138,49 +132,49 @@ def plotgraphs(kc,ti,x,num,entries,t,tfinal,dt,SP,kcst,tist):
     fig.canvas.mpl_connect('pick_event', time.onpick)
     
     class kctiinteract():  
-#    class kctiinteract(timeresponse):
-          def __init__(self):
+        def __init__(self):
               self.l2 = 0
               self.selectedtc, = ax1.plot([(kc[goodpoints])[0]],[(ti[goodpoints])[0]],'o',ms = 13,alpha = 0.5,color = 'orange',visible= False)
               self.correspondtc,=ax2.plot([por[0]], [tr[0]], 'o', ms=12, alpha=0.4,
                                           color='orange', visible=False)
-          def onpick(self,event):
+        def onpick(self,event):
 
-              if event.artist!=line1:
-                  self.correspondtc.set_visible(False)
-                  self.selectedtc.set_visible(False)                  
-                  return True
-              NW2 = len(event.ind)
-              if not NW2: return True
-              x = event.mouseevent.xdata
-              y = event.mouseevent.ydata
-              print x,y
-              r2 = np.hypot(x-(kc[goodpoints])[event.ind], y-(ti[goodpoints])[event.ind])
-              m2 = r2.argmin()
-              p2 = event.ind[m2]
-              self.l2 = p2
-              self.update()
-          def update(self):
-            if self.l2 is None: return
-            p2 = self.l2
-            self.selectedtc.set_visible(True)
-            self.selectedtc.set_data([(kc[goodpoints])[p2]],[(ti[goodpoints])[p2]])
-            self.correspondtc.set_visible(True)
-            self.correspondtc.set_data(por[p2], tr[p2])
-            t = np.arange(0, tfinal, dt)
-            yt = x[p2]
-            ax3.cla()
-            plt.ylabel('x')
-            plt.xlabel('time (s)')
-#            plt.axis([0,tfinal, 0,SP*2]) #######
-            ax3.plot(t,yt,tpr[p2],((por[p2] + 1)*SP),'bo',linewidth = 2.0)
-            ax3.axhline(y=SP,color ='black',linestyle ='--')
-            rr = np.linspace(0,SP) ##########
-            yy = [tr[p2]]*len(rr)
-            ax3.plot(yy,rr,'k--')
-         
-            fig.canvas.draw()
-            return True
+          if event.artist!=line1:
+              self.correspondtc.set_visible(False)
+              self.selectedtc.set_visible(False)                  
+              return True
+          NW2 = len(event.ind)
+          if not NW2: return True
+          x = event.mouseevent.xdata
+          y = event.mouseevent.ydata
+          print x,y
+          r2 = np.hypot(x-(kc[goodpoints])[event.ind], y-(ti[goodpoints])[event.ind])
+          m2 = r2.argmin()
+          p2 = event.ind[m2]
+          self.l2 = p2
+          self.update()
+      def update(self):
+          if self.l2 is None: return
+          p2 = self.l2
+          self.selectedtc.set_visible(True)
+          self.selectedtc.set_data([(kc[goodpoints])[p2]],[(ti[goodpoints])[p2]])
+          self.correspondtc.set_visible(True)
+          self.correspondtc.set_data(por[p2], tr[p2])
+          t = np.arange(0, tfinal, dt)
+          yt = x[p2]
+          ax3.cla()
+          plt.ylabel('x')
+          plt.xlabel('time (s)')
+            #            plt.axis([0,tfinal, 0,SP*2]) #######
+          ax3.plot(t,yt,tpr[p2],((por[p2] + 1)*SP),'bo',linewidth = 2.0)
+          ax3.axhline(y=SP,color ='black',linestyle ='--')
+          rr = np.linspace(0,SP) ##########
+          yy = [tr[p2]]*len(rr)
+          ax3.plot(yy,rr,'k--')
+             
+          fig.canvas.draw()
+          return True
+          
     tim = kctiinteract()
     fig.canvas.mpl_connect('pick_event', tim.onpick)
     plt.show()

@@ -356,17 +356,15 @@ class Parameter_window:
         global t,u,entries
         t = np.arange(0, tfinal, dt)
         entries = len(t)
-        u = func.Step(t,step_time,SP) 
+        u = func.Step(t,step_time,SP)
         kc.append( p2)
         ti.append( p1)
         td.append(0)
-#        print GP_n,Gp_d,tfinal,dt,DT,SP,step_time,ramp_time,SP_input
         polyx.append(0)
         ployy.append(kc[-1])
         poly = Polygon(list(zip(polyx, ployy)), animated=True)
         ax2.add_patch(poly)
         p = PolygonInteractor(ax2, poly)
-        print GP_n,Gp_d,tfinal,dt,DT,SP,step_time,ramp_time,SP_input
         Gc_n = [kc[-1]*ti[-1]*td[-1],(kc[-1]*ti[-1]),kc[-1]]
         Gc_d = [ti[-1],0]
         OL_TF_n = np.polymul( Gp_n, Gc_n)

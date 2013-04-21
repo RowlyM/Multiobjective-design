@@ -30,8 +30,8 @@ def Ramp(t,ramp_time,SP):
 def Step(t,step_time,SP):
     Ysp = np.zeros(len(t))
     for i in np.arange(0,len(t)):
-        if t[i]< step_time:
-            Ysp[i] = 0
+        if (t[i] < step_time):
+            Ysp[i] = SP
         else:
             Ysp[i] = SP
     return Ysp
