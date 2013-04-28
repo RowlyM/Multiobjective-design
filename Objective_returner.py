@@ -92,4 +92,4 @@ def Ojectives(t,x,num,entries,SP):
                 itae = sp.integrate.simps(error,t)
         return itae
     itae = ITAE(t,x,num,entries,SP)
-    return por, tr,tpr, ise, iae, itae
+    return por, tr, ise, iae, itae

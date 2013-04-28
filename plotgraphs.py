@@ -37,6 +37,7 @@ def plotgraphs(kc,ti,x,num,entries,t,tfinal,dt,SP,kcst,tist):
     p = pareto.domset([itemgetter(1), itemgetter(2)], zip(idx, por, tr))
    
     front = p.data
+    print front
     idx, xd, yd = map(np.array, zip(*front))
     sortidx = np.argsort(xd)
     xd = xd[sortidx]
@@ -153,27 +154,27 @@ def plotgraphs(kc,ti,x,num,entries,t,tfinal,dt,SP,kcst,tist):
           p2 = event.ind[m2]
           self.l2 = p2
           self.update()
-      def update(self):
-          if self.l2 is None: return
-          p2 = self.l2
-          self.selectedtc.set_visible(True)
-          self.selectedtc.set_data([(kc[goodpoints])[p2]],[(ti[goodpoints])[p2]])
-          self.correspondtc.set_visible(True)
-          self.correspondtc.set_data(por[p2], tr[p2])
-          t = np.arange(0, tfinal, dt)
-          yt = x[p2]
-          ax3.cla()
-          plt.ylabel('x')
-          plt.xlabel('time (s)')
-            #            plt.axis([0,tfinal, 0,SP*2]) #######
-          ax3.plot(t,yt,tpr[p2],((por[p2] + 1)*SP),'bo',linewidth = 2.0)
-          ax3.axhline(y=SP,color ='black',linestyle ='--')
-          rr = np.linspace(0,SP) ##########
-          yy = [tr[p2]]*len(rr)
-          ax3.plot(yy,rr,'k--')
-             
-          fig.canvas.draw()
-          return True
+        def update(self):
+              if self.l2 is None: return
+              p2 = self.l2
+              self.selectedtc.set_visible(True)
+              self.selectedtc.set_data([(kc[goodpoints])[p2]],[(ti[goodpoints])[p2]])
+              self.correspondtc.set_visible(True)
+              self.correspondtc.set_data(por[p2], tr[p2])
+              t = np.arange(0, tfinal, dt)
+              yt = x[p2]
+              ax3.cla()
+              plt.ylabel('x')
+              plt.xlabel('time (s)')
+                #            plt.axis([0,tfinal, 0,SP*2]) #######
+              ax3.plot(t,yt,tpr[p2],((por[p2] + 1)*SP),'bo',linewidth = 2.0)
+              ax3.axhline(y=SP,color ='black',linestyle ='--')
+              rr = np.linspace(0,SP) ##########
+              yy = [tr[p2]]*len(rr)
+              ax3.plot(yy,rr,'k--')
+                 
+              fig.canvas.draw()
+              return True
           
     tim = kctiinteract()
     fig.canvas.mpl_connect('pick_event', tim.onpick)

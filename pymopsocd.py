@@ -141,7 +141,7 @@ class swarm:
                     if ndp.dominates(p):
                         break
                 else:
-                    nd.append(p)          
+                    nd.append(p)           
         return nd
     
     def __repr__(self):

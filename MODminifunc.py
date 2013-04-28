@@ -28,13 +28,13 @@ def Ramp(t,ramp_time,SP):
     return Ysp       
         
 def Step(t,step_time,SP):
-    Ysp = np.zeros(len(t))
+    u = np.zeros(len(t))
     for i in np.arange(0,len(t)):
-        if (t[i] < step_time):
-            Ysp[i] = SP
+        if t[i] < step_time:
+            u[i] = SP
         else:
-            Ysp[i] = SP
-    return Ysp
+            u[i] = SP
+    return u
     
 def Step2(t,step_max,dt,d):  # This function is used in the Tuning function
         Ysp = np.zeros(len(t))
@@ -49,15 +49,15 @@ def RPG(num,n):
         if n == 3:
             aa = np.random.rand(num,n)  # Used for random search for control parameters
             a = 0
-            while a <= (num/2):             # First while loop is used to increase the probability of getting 
-                k_c[a] = (2)*aa[a, 0]       # small parameter range (0-2)
-                t_i[a] = (2)*aa[a, 1]
-                t_d[a] = (1)*aa[a, 2]
-                a +=1
+#            while a <= (num/2):             # First while loop is used to increase the probability of getting 
+#                k_c[a] = (2)*aa[a, 0]       # small parameter range (0-2)
+#                t_i[a] = (2)*aa[a, 1]
+#                t_d[a] = (1)*aa[a, 2]
+#                a +=1
     
             while a <= num-1:
                 k_c[a] = (60-2)*aa[a, 0]+2 
-                t_i[a ] = (30-2)*aa[a, 1]
+                t_i[a ] = (60-2)*aa[a, 1]
                 t_d[a] = (5)*aa[a, 2]
                 a +=1
         
@@ -72,7 +72,7 @@ def RPG(num,n):
             
             while a <= num-1:
                 k_c[a] = (60-2)*aa[a, 0]+2 
-                t_i[a ] = (30-2)*aa[a, 1]    
+                t_i[a ] = (60-2)*aa[a, 1]    
                 a +=1
         else:
              aa = np.random.rand(num,n)
