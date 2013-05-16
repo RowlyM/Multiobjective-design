@@ -31,7 +31,7 @@ def Step(t,step_time,SP):
     u = np.zeros(len(t))
     for i in np.arange(0,len(t)):
         if t[i] < step_time:
-            u[i] = SP
+            u[i] = 0
         else:
             u[i] = SP
     return u

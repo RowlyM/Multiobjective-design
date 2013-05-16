@@ -37,7 +37,6 @@ def plotgraphs(kc,ti,x,num,entries,t,tfinal,dt,SP,kcst,tist):
     p = pareto.domset([itemgetter(1), itemgetter(2)], zip(idx, por, tr))
    
     front = p.data
-    print front
     idx, xd, yd = map(np.array, zip(*front))
     sortidx = np.argsort(xd)
     xd = xd[sortidx]
@@ -86,22 +85,23 @@ def plotgraphs(kc,ti,x,num,entries,t,tfinal,dt,SP,kcst,tist):
         def __init__(self):
             self.lastind = 0
             
-            self.selected,  = ax2.plot([por[0]], [tr[0]], 'o', ms=12, alpha=0.4,
+            self.selected,  = ax2.plot(None, None, 'o', ms=12, alpha=0.4,
                                           color='yellow', visible=False)
-            self.correspond, = ax1.plot([(kc[goodpoints])[0]],[(ti[goodpoints])[0]],'o',ms = 13,alpha = 0.5,color = 'yellow',visible= False)
+            self.correspond, = ax1.plot(None,None,'o',ms = 13,alpha = 0.5,color = 'yellow',visible= False)
             
         def onpick(self,event):
             if event.artist!=line2:
-                print '1'
+
                 self.correspond.set_visible(False)
                 self.selected.set_visible(False)
                 return True
+   
             NW = len(event.ind)
-            print '2'
+            
             if not NW: return True
             x = event.mouseevent.xdata
             y = event.mouseevent.ydata
-            print por, event.ind
+
             radius = np.hypot(x-por[event.ind], y-tr[event.ind])
             minind = radius.argmin()
             pstn = event.ind[minind]
@@ -135,8 +135,8 @@ def plotgraphs(kc,ti,x,num,entries,t,tfinal,dt,SP,kcst,tist):
     class kctiinteract():  
         def __init__(self):
               self.l2 = 0
-              self.selectedtc, = ax1.plot([(kc[goodpoints])[0]],[(ti[goodpoints])[0]],'o',ms = 13,alpha = 0.5,color = 'orange',visible= False)
-              self.correspondtc,=ax2.plot([por[0]], [tr[0]], 'o', ms=12, alpha=0.4,
+              self.selectedtc, = ax1.plot(None,None,'o',ms = 13,alpha = 0.5,color = 'orange',visible= False)
+              self.correspondtc,=ax2.plot(None, None, 'o', ms=12, alpha=0.4,
                                           color='orange', visible=False)
         def onpick(self,event):
 
@@ -148,10 +148,11 @@ def plotgraphs(kc,ti,x,num,entries,t,tfinal,dt,SP,kcst,tist):
           if not NW2: return True
           x = event.mouseevent.xdata
           y = event.mouseevent.ydata
-          print x,y
           r2 = np.hypot(x-(kc[goodpoints])[event.ind], y-(ti[goodpoints])[event.ind])
+          
           m2 = r2.argmin()
           p2 = event.ind[m2]
+          print r2, m2, p2, event.ind
           self.l2 = p2
           self.update()
         def update(self):
