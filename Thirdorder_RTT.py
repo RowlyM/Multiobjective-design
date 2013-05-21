@@ -18,13 +18,13 @@ from scipy import*
 
 # Process Transfer function
 Gp_n = [0.125]
-Gp_d = [1, 3, 3, 1]
+Gp_d = [1, 3,3, 1]
 
 # Simulation Settings
-SP = 2.                   # Set Point
+SP = 1                   # Set Point
 tfinal = 100        # simulation period
 dt = .1
-DT = 7       # Dead time (s)
+DT = 5   # Dead time (s)
 t = np.arange(0, tfinal, dt)
 entries = len(t)
 num = 100           # number of tuning constant sets
@@ -51,17 +51,6 @@ ramp_time = 5.
 # u = func.Ramp(t,ramp_time,SP)
 u = func.Step(t, step_time, SP)
 SP_info = [SP_input, step_time, ramp_time, SP]
-
-# coefficients of the transfer function Gp = kp/(s^3 + As^2 + Bs +C)
-A = 3
-B = 3
-C = 1                 # Old process coefficients used in the initial project
-kp = 0.125
-SP = SP
-kcst = np.arange(0, 60, dt)
-
-# Relatiopnship btwn kc and Ti obtained through the direct substitution method
-tist = kp * kcst * A ** 2 / (((A * B) - C - (kp * kcst)) * (C + (kp * kcst)))
 
 
 kczn, tizn, tdzn = ZN(Gp_n, Gp_d, t, u, Contr_type, DT)
@@ -124,4 +113,4 @@ kc = k_c
 ti = t_i
 y = y.T
 
-fig = plotgraphs(kc, ti, y, num, entries, t, tfinal, dt, SP, kcst, tist)
+fig = plotgraphs(kc, ti, y, num, entries, t, tfinal, dt, SP)

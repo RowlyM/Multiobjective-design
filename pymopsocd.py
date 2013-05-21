@@ -117,7 +117,7 @@ class swarm:
             p.evaluate()
             if self.rememberevals: self.allevals.append(p.value)
         self.archive.insert(self.prune())
-        if self.archive.changed: self.archive.tofile(file('front_pl%03i' % self.t, 'w'))
+        #if self.archive.changed: self.archive.tofile(file('front_pl%03i' % self.t, 'w'))
     
     def run(self):
         while self.t < self.maxgen:

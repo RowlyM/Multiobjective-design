@@ -60,7 +60,7 @@ def RPG(num,n):
                 t_i[a ] = (60-2)*aa[a, 1]
                 t_d[a] = (5)*aa[a, 2]
                 a +=1
-        
+                 
             return k_c,t_i,t_d
         elif n == 2:
             aa = np.random.rand(num,n)
@@ -84,7 +84,7 @@ def RPG(num,n):
              while a <= num-1:
                 k_c[a] = (60-2)*aa[a]  
                 a +=1
-           
+          
         return k_c,t_i,t_d
 
 

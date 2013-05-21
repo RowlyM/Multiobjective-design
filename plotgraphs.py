@@ -14,7 +14,7 @@ import objectives as obj
 import pareto
 import scipy as sp
 
-def plotgraphs(kc,ti,x,num,entries,t,tfinal,dt,SP,kcst,tist):
+def plotgraphs(kc,ti,x,num,entries,t,tfinal,dt,SP):
     
 
     por,tpr = obj.overshoot(t,x,num,entries,SP)
@@ -50,7 +50,6 @@ def plotgraphs(kc,ti,x,num,entries,t,tfinal,dt,SP,kcst,tist):
     #ax1
     ax1 = fig.add_subplot(2,2,1)
     linea = ax1.plot(kc[UNSTABLE],ti[UNSTABLE], 'r+') # adds ustables points
-    lineb = ax1.plot(kcst,tist,'k-')
     linee = ax1.plot(kc[SSoffset],ti[SSoffset],'g+') 
     line1, = ax1.plot(kc[goodpoints], ti[goodpoints], 'wo',picker = 5,) # adds good points
     linec = ax1.plot(kc[idx], ti[idx],'bo') # from pareto.data
@@ -67,8 +66,8 @@ def plotgraphs(kc,ti,x,num,entries,t,tfinal,dt,SP,kcst,tist):
     line222=ax2.plot(xd, yd, 'bo-')
     line22 = ax2.plot(por[zns-2],tr[zns-2],'ks')
     linecc2 = ax2.plot(por[zns-1],tr[zns-1],'gs') # cohen coon settings
-    plt.setp((linea,lineb,linee,line1),linewidth = 2.0)
-    plt.figlegend((linea,lineb,linec,lined,lineco,linetl,linee,line1),('Unstable','Stabilty limit','Pareto points','Z&N settings','Cohen Coon','Tyreus & Luyben','S/S offset','Stable'),'upper right',borderaxespad=0.)
+    plt.setp((linea,linee,line1),linewidth = 2.0)
+    plt.figlegend((linea,linec,lined,lineco,linetl,linee,line1),('Unstable''Pareto points','Z&N settings','Cohen Coon','Tyreus & Luyben','S/S offset','Stable'),'upper right',borderaxespad=0.)
     plt.axis([-0.2,1, 0,40])
     plt.ylabel('risetime (s)',fontsize = 'large')
     plt.xlabel('overshoot ratio',fontsize = 'large')
@@ -113,8 +112,8 @@ def plotgraphs(kc,ti,x,num,entries,t,tfinal,dt,SP,kcst,tist):
             pstn = self.lastind
             self.selected.set_visible(True)
             self.selected.set_data(por[pstn], tr[pstn])
-            self.correspond.set_visible(True)
-            self.correspond.set_data([(kc[goodpoints])[pstn]],[(ti[goodpoints])[pstn]])
+            print self.correspond.set_visible(False)
+            print self.correspond.set_data([(kc[goodpoints])[pstn]],[(ti[goodpoints])[pstn]])
             t = np.arange(0, tfinal, dt)
             yt = x[pstn]
             ax3.cla()
@@ -152,7 +151,6 @@ def plotgraphs(kc,ti,x,num,entries,t,tfinal,dt,SP,kcst,tist):
           
           m2 = r2.argmin()
           p2 = event.ind[m2]
-          print r2, m2, p2, event.ind
           self.l2 = p2
           self.update()
         def update(self):
@@ -160,8 +158,8 @@ def plotgraphs(kc,ti,x,num,entries,t,tfinal,dt,SP,kcst,tist):
               p2 = self.l2
               self.selectedtc.set_visible(True)
               self.selectedtc.set_data([(kc[goodpoints])[p2]],[(ti[goodpoints])[p2]])
-              self.correspondtc.set_visible(True)
-              self.correspondtc.set_data(por[p2], tr[p2])
+              print self.correspondtc.set_visible(True)
+              print self.correspondtc.set_data(por[p2], tr[p2])
               t = np.arange(0, tfinal, dt)
               yt = x[p2]
               ax3.cla()

@@ -13,7 +13,7 @@ import MODminifunc as func
 from Tuners import*
 from EulerODE import Euler
 
-def Gen(Gp_n, Gp_d, SP, tfinal, dt, DT):
+def Gen(num_of_gens, Gp_n, Gp_d, SP, tfinal, dt, DT):
 
     def plotter(kc,ti,td,x,num,entries,t,tfinal,dt,SP,kcst,tist):
         
@@ -57,6 +57,7 @@ def Gen(Gp_n, Gp_d, SP, tfinal, dt, DT):
         kc_goodpoints, ti_goodpoints, td_goodpoints = kc[goodpoints], ti[goodpoints], td[goodpoints]
         kc_idx, ti_idx, td_idx = kc[idx], ti[idx], td[idx]
 
+       
     t = np.arange(0, tfinal, dt)
     entries = len(t)
     num = 20           # number of tuning constant sets

@@ -6,53 +6,64 @@ Created on Sun Apr 28 01:59:46 2013
 """
 import matplotlib.pyplot as plt 
 
-def obj_redrawer(fig,ppor, ptr, pise, piae, pitae, xobj, yobj, Mop_points,por, tr, ISE, IAE, ITAE):
+def obj_redrawer(fig,ppor, ptr, pise, piae, pitae, xobj, yobj, Mop_points,por, tr, ISE, IAE, ITAE,gen_ppor, gen_ptr, gen_pise, gen_piae, gen_pitae, gen_por, gen_tr, gen_ise, gen_iae, gen_itae):
     
     
 ###################################Risetime as Y objective #############################################     
     if (xobj == 'RT') & (yobj == 'RT'):
         ax3= fig.add_subplot(233)
         ax3.cla()
-        pline = ax3.plot(tr, tr, 'wo',picker = 5,)
+
         ax3.plot(Mop_points[1],Mop_points[1],'ro')
         ax3.plot(ptr, ptr, 'bo-')
         plt.ylabel('risetime (s)',fontsize = 'large')
         plt.xlabel('risetime (s)',fontsize = 'large')
     
     elif (xobj == 'OSR') & (yobj == 'RT'):
+#        plt.figure(2)
+#        good = plt.plot(por, tr, 'wo', label = "Stable" )
+##        mop = plt.plot(Mop_points[0],Mop_points[1],'ro', label = "MOPSO-cd")
+#        pop = plt.plot(ppor, ptr, 'bo', label = "Pareto front", )
         
+#        plt.legend( loc = 1)
+#        plt.show()
         ax3= fig.add_subplot(233)
         ax3.cla()
-        pline = ax3.plot(por, tr, 'wo',picker = 5,)
-        ax3.plot(Mop_points[0],Mop_points[1],'ro')
-        ax3.plot(ppor, ptr, 'bo-')
+#        ax3.plot(gen_por, gen_tr, 'wo',picker = 5,)
+#        ax3.plot(por, tr, 'wo',picker = 5,)
+        ax3.plot(Mop_points[0],Mop_points[1],'ro', label = "MOPSO-cd")
+        ax3.plot(ppor, ptr, 'go', label = "User")
+        ax3.plot(gen_ppor, gen_ptr, 'bo', label = "Brute Force")
         plt.ylabel('risetime (s)',fontsize = 'large')
         plt.xlabel('overshoot ratio',fontsize = 'large')
+        
         
     elif (xobj == 'ISE') & (yobj == 'RT'):
         ax3= fig.add_subplot(233)
         ax3.cla()
-        pline = ax3.plot(ISE, tr, 'wo',picker = 5,)
-        ax3.plot(Mop_points[2],Mop_points[1],'ro')
-        ax3.plot(pise, ptr, 'bo-')
+        ax3.plot(Mop_points[2],Mop_points[1],'ro', label = "MOPSO-cd")
+        ax3.plot(gen_pise, gen_ptr, 'bo', label = "User")
+        ax3.plot(pise, ptr, 'go', label = "Brute Force")
         plt.ylabel('risetime (s)',fontsize = 'large')
         plt.xlabel('ISE',fontsize = 'large')
         
     elif (xobj == 'IAE') & (yobj == 'RT'):
         ax3= fig.add_subplot(233)
         ax3.cla()
-        pline = ax3.plot(IAE, tr, 'wo',picker = 5,)
-        ax3.plot(Mop_points[3],Mop_points[1],'ro')
-        ax3.plot(piae, ptr, 'bo-')
+
+        ax3.plot(Mop_points[3],Mop_points[1],'ro', label = "MOPSO-cd")
+        ax3.plot(gen_piae, gen_ptr, 'bo', label = "User")
+        ax3.plot(piae, ptr, 'go')
         plt.ylabel('risetime (s)',fontsize = 'large')
         plt.xlabel('IAE',fontsize = 'large')    
         
     elif (xobj == 'ITAE') & (yobj == 'RT'):
         ax3= fig.add_subplot(233)
         ax3.cla()
-        pline = ax3.plot(ITAE, tr, 'wo',picker = 5,)
-        ax3.plot(Mop_points[4],Mop_points[1],'ro')
-        ax3.plot(pitae, ptr, 'bo-')
+
+        ax3.plot(Mop_points[4],Mop_points[1],'ro', label = "MOPSO-cd")
+        ax3.plot(gen_pitae, gen_ptr, 'bo', label = "User")
+        ax3.plot(pitae, ptr, 'go', label = "Brute Force")
         plt.ylabel('risetime (s)',fontsize = 'large')
         plt.xlabel('ITAE',fontsize = 'large')
         
@@ -61,9 +72,10 @@ def obj_redrawer(fig,ppor, ptr, pise, piae, pitae, xobj, yobj, Mop_points,por, t
     elif (xobj == 'RT') & (yobj == 'OSR'):
         ax3= fig.add_subplot(233)
         ax3.cla()
-        pline = ax3.plot(tr, por, 'wo',picker = 5,)
-        ax3.plot(Mop_points[1],Mop_points[0],'ro')
-        ax3.plot(ptr, ppor, 'bo-')
+
+        ax3.plot(Mop_points[1],Mop_points[0],'ro', label = "MOPSO-cd")
+        ax3.plot(gen_ptr, gen_ppor, 'bo', label = "Brute Force")
+        ax3.plot(ptr, ppor, 'go', label = "User")
         plt.ylabel('overshoot ratio',fontsize = 'large')
         plt.xlabel('risetime (s)',fontsize = 'large')
     
@@ -71,36 +83,40 @@ def obj_redrawer(fig,ppor, ptr, pise, piae, pitae, xobj, yobj, Mop_points,por, t
         
         ax3= fig.add_subplot(233)
         ax3.cla()
-        pline = ax3.plot(por, por, 'wo',picker = 5,)
-        ax3.plot(Mop_points[0],Mop_points[0],'ro')
-        ax3.plot(ppor, ppor, 'bo-')
+
+        ax3.plot(Mop_points[0],Mop_points[0],'ro', label = "MOPSO-cd")
+        ax3.plot(gen_ppor, gen_ppor, 'bo', label = "Brute Force")
+        ax3.plot(ppor, ppor, 'go', label = "User")
         plt.ylabel('overshoot ratio',fontsize = 'large')
         plt.xlabel('overshoot ratio',fontsize = 'large')
         
     elif (xobj == 'ISE') & (yobj == 'OSR'):
         ax3= fig.add_subplot(233)
         ax3.cla()
-        pline = ax3.plot(ISE, por, 'wo',picker = 5,)
-        ax3.plot(Mop_points[2],Mop_points[0],'ro')
-        ax3.plot(pise, ppor, 'bo-')
+
+        ax3.plot(Mop_points[2],Mop_points[0],'ro', label = "MOPSO-cd")
+        ax3.plot(gen_pise, gen_ppor, 'bo', label = "Brute Force")
+        ax3.plot(pise, ppor, 'go', label = "User")
         plt.ylabel('overshoot ratio',fontsize = 'large')
         plt.xlabel('ISE',fontsize = 'large')
         
     elif (xobj == 'IAE') & (yobj == 'OSR'):
         ax3= fig.add_subplot(233)
         ax3.cla()
-        pline = ax3.plot(IAE, por, 'wo',picker = 5,)
-        ax3.plot(Mop_points[3],Mop_points[0],'ro')
-        ax3.plot(piae, ppor, 'bo-')
+
+        ax3.plot(Mop_points[3],Mop_points[0],'ro', label = "MOPSO-cd")
+        ax3.plot(gen_piae, gen_ppor, 'bo', label = "Brute Force")
+        ax3.plot(piae, ppor, 'go', label = "User")
         plt.ylabel('overshoot ratio',fontsize = 'large')
         plt.xlabel('IAE',fontsize = 'large')    
         
     elif (xobj == 'ITAE') & (yobj == 'OSR'):
         ax3= fig.add_subplot(233)
         ax3.cla()
-        pline = ax3.plot(ITAE, por, 'wo',picker = 5,)
-        ax3.plot(Mop_points[4],Mop_points[0],'ro')
-        ax3.plot(pitae,ppor, 'bo-')
+
+        ax3.plot(Mop_points[4],Mop_points[0],'ro', label = "MOPSO-cd")
+        ax3.plot(gen_piae, gen_ppor, 'bo', label = "Brute Force")
+        ax3.plot(pitae,ppor, 'go', label = "User")
         plt.ylabel('overshoot ratio',fontsize = 'large')
         plt.xlabel('ITAE',fontsize = 'large')  
         
@@ -110,9 +126,10 @@ def obj_redrawer(fig,ppor, ptr, pise, piae, pitae, xobj, yobj, Mop_points,por, t
     elif (xobj == 'RT') & (yobj == 'ISE'):
         ax3= fig.add_subplot(233)
         ax3.cla()
-        pline = ax3.plot(tr, ISE, 'wo',picker = 5,)
-        ax3.plot(Mop_points[1],Mop_points[2],'ro')
-        ax3.plot(ptr, pise, 'bo-')
+
+        ax3.plot(Mop_points[1],Mop_points[2],'ro', label = "MOPSO-cd")
+        ax3.plot(gen_ptr, gen_pise, 'bo', label = "Brute Force")
+        ax3.plot(ptr, pise, 'go', label = "User")
         plt.ylabel('ISE',fontsize = 'large')
         plt.xlabel('risetime (s)',fontsize = 'large')
     
@@ -120,36 +137,40 @@ def obj_redrawer(fig,ppor, ptr, pise, piae, pitae, xobj, yobj, Mop_points,por, t
         
         ax3= fig.add_subplot(233)
         ax3.cla()
-        pline = ax3.plot(por, ISE, 'wo',picker = 5,)
-        ax3.plot(Mop_points[0],Mop_points[2],'ro')
-        ax3.plot(ppor, pise, 'bo-')
+
+        ax3.plot(Mop_points[0],Mop_points[2],'ro', label = "MOPSO-cd")
+        ax3.plot(gen_ppor, gen_pise, 'bo', label = "Brute Force")
+        ax3.plot(ppor, pise, 'go', label = "User")
         plt.ylabel('ISE',fontsize = 'large')
         plt.xlabel('overshoot ratio',fontsize = 'large')
         
     elif (xobj == 'ISE') & (yobj == 'ISE'):
         ax3= fig.add_subplot(233)
         ax3.cla()
-        pline = ax3.plot(ISE, ISE, 'wo',picker = 5,)
-        ax3.plot(Mop_points[2],Mop_points[2],'ro')
-        ax3.plot(pise, pise, 'bo-')
+
+        ax3.plot(Mop_points[2],Mop_points[2],'ro', label = "MOPSO-cd")
+        ax3.plot(gen_pise, gen_pise, 'bo', label = "Brute Force")
+        ax3.plot(pise, pise, 'go', label = "User")
         plt.ylabel('ISE',fontsize = 'large')
         plt.xlabel('ISE',fontsize = 'large')
         
     elif (xobj == 'IAE') & (yobj == 'ISE'):
         ax3= fig.add_subplot(233)
         ax3.cla()
-        pline = ax3.plot(IAE, ISE, 'wo',picker = 5,)
-        ax3.plot(Mop_points[3],Mop_points[2],'ro')
-        ax3.plot(piae, pise, 'bo-')
+
+        ax3.plot(Mop_points[3],Mop_points[2],'ro', label = "MOPSO-cd")
+        ax3.plot(gen_piae, gen_pise, 'bo', label = "Brute Force")
+        ax3.plot(piae, pise, 'go', label = "User")
         plt.ylabel('ISE',fontsize = 'large')
         plt.xlabel('IAE',fontsize = 'large')    
         
     elif (xobj == 'ITAE') & (yobj == 'ISE'):
         ax3= fig.add_subplot(233)
         ax3.cla()
-        pline = ax3.plot(ITAE, ISE, 'wo',picker = 5,)
-        ax3.plot(Mop_points[4],Mop_points[2],'ro')
-        ax3.plot(pitae, pise, 'bo-')
+
+        ax3.plot(Mop_points[4],Mop_points[2],'ro', label = "MOPSO-cd")
+        ax3.plot(gen_piae, gen_pise, 'bo', label = "Brute Force")
+        ax3.plot(pitae, pise, 'go', label = "User")
         plt.ylabel('ISE',fontsize = 'large')
         plt.xlabel('ITAE',fontsize = 'large')   
         
@@ -158,9 +179,10 @@ def obj_redrawer(fig,ppor, ptr, pise, piae, pitae, xobj, yobj, Mop_points,por, t
     elif (xobj == 'RT') & (yobj == 'IAE'):
         ax3= fig.add_subplot(233)
         ax3.cla()
-        pline = ax3.plot(tr, IAE, 'wo',picker = 5,)
-        ax3.plot(Mop_points[1],Mop_points[3],'ro')
-        ax3.plot(ptr, piae, 'bo-')
+
+        ax3.plot(Mop_points[1],Mop_points[3],'ro', label = "MOPSO-cd")
+        ax3.plot(gen_ptr, gen_piae, 'bo', label = "Brute Force")
+        ax3.plot(ptr, piae, 'go', label = "User")
         plt.ylabel('IAE',fontsize = 'large')
         plt.xlabel('risetime (s)',fontsize = 'large')
     
@@ -168,36 +190,40 @@ def obj_redrawer(fig,ppor, ptr, pise, piae, pitae, xobj, yobj, Mop_points,por, t
         
         ax3= fig.add_subplot(233)
         ax3.cla()
-        pline = ax3.plot(por, IAE, 'wo',picker = 5,)
-        ax3.plot(Mop_points[0],Mop_points[3],'ro')
-        ax3.plot(ppor, piae, 'bo-')
+
+        ax3.plot(Mop_points[0],Mop_points[3],'ro', label = "MOPSO-cd")
+        ax3.plot(gen_ppor, gen_piae, 'bo', label = "Brute Force")
+        ax3.plot(ppor, piae, 'go', label = "User")
         plt.ylabel('IAE',fontsize = 'large')
         plt.xlabel('overshoot ratio',fontsize = 'large')
         
     elif (xobj == 'ISE') & (yobj == 'IAE'):
         ax3= fig.add_subplot(233)
         ax3.cla()
-        pline = ax3.plot(ISE, IAE, 'wo',picker = 5,)
-        ax3.plot(Mop_points[2],Mop_points[3],'ro')
-        ax3.plot(pise, piae, 'bo-')
+
+        ax3.plot(Mop_points[2],Mop_points[3],'ro', label = "MOPSO-cd")
+        ax3.plot(gen_pise, gen_piae, 'bo', label = "Brute Force")
+        ax3.plot(pise, piae, 'go', label = "User")
         plt.ylabel('IAE',fontsize = 'large')
         plt.xlabel('ISE',fontsize = 'large')
         
     elif (xobj == 'IAE') & (yobj == 'IAE'):
         ax3= fig.add_subplot(233)
         ax3.cla()
-        pline = ax3.plot(IAE, IAE, 'wo',picker = 5,)
-        ax3.plot(Mop_points[3],Mop_points[3],'ro')
-        ax3.plot(piae, piae, 'bo-')
+
+        ax3.plot(Mop_points[3],Mop_points[3],'ro', label = "MOPSO-cd")
+        ax3.plot(gen_piae, gen_piae, 'bo', label = "Brute Force")
+        ax3.plot(piae, piae, 'go', label = "User")
         plt.ylabel('IAE',fontsize = 'large')
         plt.xlabel('IAE',fontsize = 'large')    
         
     elif (xobj == 'ITAE') & (yobj == 'IAE'):
         ax3= fig.add_subplot(233)
         ax3.cla()
-        pline = ax3.plot(ITAE, IAE, 'wo',picker = 5,)
-        ax3.plot(Mop_points[4],Mop_points[3],'ro')
-        ax3.plot(pitae, piae, 'bo-')
+
+        ax3.plot(Mop_points[4],Mop_points[3],'ro', label = "MOPSO-cd")
+        ax3.plot(gen_pitae, gen_piae, 'bo', label = "Brute Force")
+        ax3.plot(pitae, piae, 'go', label = "User")
         plt.ylabel('IAE',fontsize = 'large')
         plt.xlabel('ITAE',fontsize = 'large')   
         
@@ -206,9 +232,10 @@ def obj_redrawer(fig,ppor, ptr, pise, piae, pitae, xobj, yobj, Mop_points,por, t
     elif (xobj == 'RT') & (yobj == 'ITAE'):
         ax3= fig.add_subplot(233)
         ax3.cla()
-        pline = ax3.plot(tr, ITAE, 'wo',picker = 5,)
-        ax3.plot(Mop_points[1],Mop_points[4],'ro')
-        ax3.plot(ptr, pitae, 'bo-')
+
+        ax3.plot(Mop_points[1],Mop_points[4],'ro', label = "MOPSO-cd")
+        ax3.plot(gen_ptr, gen_pitae, 'bo', label = "Brute Force")
+        ax3.plot(ptr, pitae, 'go', label = "User")
         plt.ylabel('ITAE',fontsize = 'large')
         plt.xlabel('risetime (s)',fontsize = 'large')
     
@@ -216,35 +243,41 @@ def obj_redrawer(fig,ppor, ptr, pise, piae, pitae, xobj, yobj, Mop_points,por, t
         
         ax3= fig.add_subplot(233)
         ax3.cla()
-        pline = ax3.plot(por, ITAE, 'wo',picker = 5,)
-        ax3.plot(Mop_points[0],Mop_points[4],'ro')
-        ax3.plot(ppor, pitae, 'bo-')
+
+        ax3.plot(Mop_points[0],Mop_points[4],'ro', label = "MOPSO-cd")
+        ax3.plot(gen_ppor, gen_pitae, 'bo', label = "Brute Force")
+        ax3.plot(ppor, pitae, 'go', label = "User")
         plt.ylabel('ITAE',fontsize = 'large')
         plt.xlabel('overshoot ratio',fontsize = 'large')
         
     elif (xobj == 'ISE') & (yobj == 'ITAE'):
         ax3= fig.add_subplot(233)
         ax3.cla()
-        pline = ax3.plot(ISE, ITAE, 'wo',picker = 5,)
-        ax3.plot(Mop_points[2],Mop_points[4],'ro')
-        ax3.plot(pise, pitae, 'bo-')
+
+        ax3.plot(Mop_points[2],Mop_points[4],'ro', label = "MOPSO-cd")
+        ax3.plot(gen_pise, gen_pitae, 'bo', label = "Brute Force")
+        ax3.plot(pise, pitae, 'go', label = "User")
         plt.ylabel('ITAE',fontsize = 'large')
         plt.xlabel('ISE',fontsize = 'large')
         
     elif (xobj == 'IAE') & (yobj == 'ITAE'):
         ax3= fig.add_subplot(233)
         ax3.cla()
-        pline = ax3.plot(IAE, ITAE, 'wo',picker = 5,)
-        ax3.plot(Mop_points[3],Mop_points[4],'ro')
-        ax3.plot(piae, pitae, 'bo-')
+
+        ax3.plot(Mop_points[3],Mop_points[4],'ro', label = "MOPSO-cd")
+        ax3.plot(gen_piae, gen_pitae, 'bo', label = "Brute Force")
+        ax3.plot(piae, pitae, 'go', label = "User")
         plt.ylabel('ITAE',fontsize = 'large')
         plt.xlabel('IAE',fontsize = 'large')    
         
     elif (xobj == 'ITAE') & (yobj == 'ITAE'):
         ax3= fig.add_subplot(233)
         ax3.cla()
-        pline = ax3.plot(ITAE, ITAE, 'wo',picker = 5,)
-        ax3.plot(Mop_points[4],Mop_points[4],'ro')
-        ax3.plot(pitae, pitae, 'bo-')
+
+        ax3.plot(Mop_points[4],Mop_points[4],'ro', label = "MOPSO-cd")
+        ax3.plot(gen_pitae, gen_pitae, 'bo', label = "Brute Force")
+        ax3.plot(pitae, pitae, 'go', label = "User")
         plt.ylabel('ITAE',fontsize = 'large')
-        plt.xlabel('ITAE',fontsize = 'large')           
+        plt.xlabel('ITAE',fontsize = 'large')   
+        
+    plt.legend( loc = 1)    
