@@ -234,8 +234,7 @@ class Parasort:
         Y = np.array(Y)[goodpoints]
         
         # Pareto points
-        p = pareto.domset([itemgetter(
-            1), itemgetter(2)], zip(idx, por, tr, ISE, IAE, ITAE))
+        p = pareto.domset(map(itemgetter, range(1, 6)), zip(idx, por, tr, ISE, IAE, ITAE))
         front = p.data
         idx, ppor, ptr, pise, piae, pitae = map(np.array, zip(*front))
         sortidx = np.argsort(ppor)
@@ -330,8 +329,7 @@ class Parasort:
 #        Y = np.array(Y)[goodpoints]
         print Y
         #Pareto points
-        p = pareto.domset([itemgetter(
-            1), itemgetter(2)], zip(idx, por, tr, ISE, IAE, ITAE))
+        p = pareto.domset(map(itemgetter, range(1, 6)), zip(idx, por, tr, ISE, IAE, ITAE))
         front = p.data
         idx, ppor, ptr, pise, piae, pitae = map(np.array, zip(*front))
         sortidx = np.argsort(ppor)
@@ -585,7 +583,7 @@ class Point_generation():
         
         x = np.array(x)[goodpoints]
         xt = x
-        p = pareto.domset([itemgetter(1), itemgetter(2)], zip(idx, por, tr, ISE, IAE, ITAE))
+        p = pareto.domset(map(itemgetter, range(1, 6)), zip(idx, por, tr, ISE, IAE, ITAE))
        
         front = p.data
         idx, ppor, ptr, pise, piae, pitae = map(np.array, zip(*front))
@@ -1228,8 +1226,7 @@ class Parasort:
         Y = np.array(Y)[goodpoints]
         
         # Pareto points
-        p = pareto.domset([itemgetter(
-            1), itemgetter(2)], zip(idx, por, tr, ISE, IAE, ITAE))
+        p = pareto.domset(map(itemgetter, range(1, 6)), zip(idx, por, tr, ISE, IAE, ITAE))
         front = p.data
         idx, ppor, ptr, pise, piae, pitae = map(np.array, zip(*front))
         sortidx = np.argsort(ppor)
@@ -1324,8 +1321,7 @@ class Parasort:
 #        Y = np.array(Y)[goodpoints]
         print Y
         #Pareto points
-        p = pareto.domset([itemgetter(
-            1), itemgetter(2)], zip(idx, por, tr, ISE, IAE, ITAE))
+        p = pareto.domset(map(itemgetter, range(1, 6)), zip(idx, por, tr, ISE, IAE, ITAE))
         front = p.data
         idx, ppor, ptr, pise, piae, pitae = map(np.array, zip(*front))
         sortidx = np.argsort(ppor)
@@ -1579,7 +1575,7 @@ class Point_generation():
         
         x = np.array(x)[goodpoints]
         xt = x
-        p = pareto.domset([itemgetter(1), itemgetter(2)], zip(idx, por, tr, ISE, IAE, ITAE))
+        p = pareto.domset(map(itemgetter, range(1, 6)), zip(idx, por, tr, ISE, IAE, ITAE))
        
         front = p.data
         idx, ppor, ptr, pise, piae, pitae = map(np.array, zip(*front))
