@@ -89,6 +89,7 @@ def plotgraphs(kc,ti,x,num,entries,t,tfinal,dt,SP):
             self.correspond, = ax1.plot(None,None,'o',ms = 13,alpha = 0.5,color = 'yellow',visible= False)
             
         def onpick(self,event):
+            print event.artist!=line2
             if event.artist!=line2:
 
                 self.correspond.set_visible(False)
@@ -112,8 +113,8 @@ def plotgraphs(kc,ti,x,num,entries,t,tfinal,dt,SP):
             pstn = self.lastind
             self.selected.set_visible(True)
             self.selected.set_data(por[pstn], tr[pstn])
-            print self.correspond.set_visible(False)
-            print self.correspond.set_data([(kc[goodpoints])[pstn]],[(ti[goodpoints])[pstn]])
+            self.correspond.set_visible(False)
+            self.correspond.set_data([(kc[goodpoints])[pstn]],[(ti[goodpoints])[pstn]])
             t = np.arange(0, tfinal, dt)
             yt = x[pstn]
             ax3.cla()

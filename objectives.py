@@ -10,7 +10,6 @@ import scipy as sp
 
 def overshoot(t,x,num,entries,SP):
         # List changes
-        print num
         tpr = np.zeros(num)
         por = np.zeros(num)
         for u in range(0,num):

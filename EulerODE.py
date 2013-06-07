@@ -3,7 +3,7 @@
 
 @author: Rowly Mudzhiba
 
-Euler fuction was developed to replace the DDEfunction. DDEfunction results are not satisfactory.
+Euler fuction was developed to replace the DDEfunction. DDEfunction results were not satisfactory.
 """
 import numpy as np
 from scipy import interp

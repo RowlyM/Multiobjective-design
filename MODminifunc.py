@@ -6,7 +6,6 @@ Created on Sat Jan 12 15:24:18 2013
 """
 
 import numpy as np
-from scipy import linalg
 
 def mirror(a):
         b  = len(a)
@@ -23,8 +22,7 @@ def Ramp(t,ramp_time,SP):
         if t[i] <=ramp_time:
             Ysp[i] = (SP/ramp_time)*t[i]    
         else:
-            Ysp[i] = SP
-        
+            Ysp[i] = SP  
     return Ysp       
         
 def Step(t,step_time,SP):
@@ -36,7 +34,8 @@ def Step(t,step_time,SP):
             u[i] = SP
     return u
     
-def Step2(t,step_max,dt,d):  # This function is used in the Tuning function
+# This function is used in the Tuning function    
+def Step2(t,step_max,dt,d):  
         Ysp = np.zeros(len(t))
         inc = d/dt
         Ysp[inc:] = step_max
@@ -47,14 +46,8 @@ def RPG(num,n):
         t_i = np.zeros(num)
         t_d = np.zeros(num)
         if n == 3:
-            aa = np.random.rand(num,n)  # Used for random search for control parameters
-            a = 0
-#            while a <= (num/2):             # First while loop is used to increase the probability of getting 
-#                k_c[a] = (2)*aa[a, 0]       # small parameter range (0-2)
-#                t_i[a] = (2)*aa[a, 1]
-#                t_d[a] = (1)*aa[a, 2]
-#                a +=1
-    
+            aa = np.random.rand(num,n)
+            a = 0    
             while a <= num-1:
                 k_c[a] = (60-2)*aa[a, 0]+2 
                 t_i[a ] = (60-2)*aa[a, 1]

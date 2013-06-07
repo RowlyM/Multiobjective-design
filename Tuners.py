@@ -49,8 +49,7 @@ def ZN(Gp_n,Gp_d,t,u,Contr_type,DT):
 #            print 'PID Controller'
             CP[0] = 1.2*(tau/(Td*kp))
             CP[1] = 2*Td
-            CP[2] = .5*Td
-            
+            CP[2] = .5*Td  
 #        print 'Ziegler-Nicholas parameters'     
 #        print CP    
         return CP
@@ -79,6 +78,5 @@ def Cohen_Coon(Gp_n,Gp_d,t,u,Contr_type,DT):
             CP[2] = (.37-.37*b)/(1-0.81*b)*Td
             
 #        print ' Cohen- Coon Parameters'
-#        print CP
         return CP
 

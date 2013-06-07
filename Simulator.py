@@ -12,6 +12,7 @@ from scipy import signal
 from scipy import linalg
 from EulerODE import Euler
 import Objective_returner
+import MODminifunc as func
 
 def State_Space_mats(Gp_n, Gp_d, kc, ti, td):
 
@@ -37,10 +38,15 @@ def stable(A_CL):
     return (rootsA.real < 0).all()
     
     
-def response_gen(tfinal, dt, Gp_n, Gp_d, SP, DT,u, kc, ti,td):
+def response_gen(tfinal, dt, Gp_n, Gp_d, SP, DT,SP_input,step_time,ramp_time, kc, ti,td):
     t = np.arange(0, tfinal, dt)
     num = 1
     entries = len(t)
+    if SP_input == 'Step':
+        u = func.Step(t, step_time, SP)
+    else:
+        u = func.Ramp(t, ramp_time, SP)
+        
     y = np.zeros((num,entries))
     OL_mats = State_Space_mats(Gp_n, Gp_d, kc, ti, td)[0]
     CL_mats = State_Space_mats(Gp_n, Gp_d, kc, ti, td)[1]
