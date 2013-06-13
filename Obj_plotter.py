@@ -15,7 +15,8 @@ def obj_redrawer(fig,ppor, ptr, pise, piae, pitae, xobj, yobj, Mop_points,por, t
         ax3.cla()
 
         line11, = ax3.plot(Mop_points[1],Mop_points[1],'ro')
-        ax3.plot(ptr, ptr, 'bo-')
+        line12, = ax3.plot(ptr, ptr, 'go', label = "User", picker=5)
+        line13,= ax3.plot(gen_ptr, gen_ptr, 'bo', label = "Brute Force", picker=5)
         plt.ylabel('risetime (s)',fontsize = 'large')
         plt.xlabel('risetime (s)',fontsize = 'large')
     
@@ -272,5 +273,6 @@ def obj_redrawer(fig,ppor, ptr, pise, piae, pitae, xobj, yobj, Mop_points,por, t
         plt.ylabel('ITAE',fontsize = 'large')
         plt.xlabel('ITAE',fontsize = 'large')   
         
-    plt.legend( loc = 1) 
+#    plt.legend( loc = 1) 
+    plt.legend(bbox_to_anchor=(-2.4,.75), loc= 5, borderaxespad=3)
     return line11, line12, line13

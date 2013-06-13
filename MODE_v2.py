@@ -142,6 +142,7 @@ def redraw_ax2():
     
 
 def redraw_ax3():
+    
     global line11, line12, line13
     line11, line12, line13 = obj_redrawer(fig, ppor, ptr, pise, piae, pitae, xobj, yobj,
                  Mop_points, por, tr, ISE, IAE, ITAE, gen_ppor,
@@ -353,6 +354,7 @@ class Parasort:
             idx_len = len(kc)
             idx = np.arange(0, idx_len)
             idx = np.array(idx)[goodpoints]
+            show_ax4 = False
         else:
 
             idx_len = len(kc)
@@ -376,22 +378,25 @@ class Parasort:
             pise = pise[sortidx]
             piae = piae[sortidx]
             pitae = pitae[sortidx]
+            show_ax4 = True
         
         self.ax1()
         self.ax2()
         self.ax3()
-        
-        ax4 = fig.add_subplot(212)
-        ax4.cla()
-        ax4.plot(t, (Y[indexi]), 'g', tpr[indexi], ((por[indexi] + 1) * SP), 'ro', linewidth=2.0)
-        ax4.axhline(y=SP, color='black', linestyle='--')
-        rr = np.linspace(0, SP)
-        yy = [tr[indexi]] * len(rr)
-        ax4.plot(yy, rr, 'k--')
-        plt.ylabel('y', fontsize=12)
-        plt.xlabel('time (s)', fontsize=12)
-
-        fig.canvas.draw()
+        if show_ax4 == True:
+            ax4 = fig.add_subplot(212)
+            ax4.cla()
+            ax4.plot(t, (Y[indexi]), 'g', tpr[indexi], ((por[indexi] + 1) * SP), 'ro', linewidth=2.0)
+            ax4.axhline(y=SP, color='black', linestyle='--')
+            rr = np.linspace(0, SP)
+            yy = [tr[indexi]] * len(rr)
+            ax4.plot(yy, rr, 'k--')
+            plt.ylabel('y', fontsize=12)
+            plt.xlabel('time (s)', fontsize=12)
+    
+            fig.canvas.draw()
+        else:
+            return
 
 ############### Draws and enables dragging points on 'kc vs td' #################
 
@@ -522,7 +527,7 @@ class kc_td_interact():
                   NW2 = len(event.ind)
                   if not NW2: return True
 
-                  r2 = np.hypot(x-(polyx)[event.ind], y-(polyy)[event.ind])
+                  r2 = np.hypot(x-np.array(polyx)[event.ind], y-np.array(polyy)[event.ind])
     
                   m2 = r2.argmin()
                   p2 = event.ind[m2]
@@ -542,6 +547,7 @@ class kc_td_interact():
               redraw_ax3()
               # A yellow point is plotted to identify the corresponding point
               ax1.plot(gen_ti_idx[p2], gen_kc_idx[p2],'o',ms = 13,alpha = 0.5,color = 'yellow')
+              ax2.plot(gen_td_idx[p2], gen_kc_idx[p2],'o',ms = 13,alpha = 0.5,color = 'yellow')
               ax3.plot(gen_ppor[p2], gen_ptr[p2],'o',ms = 13,alpha = 0.5,color = 'yellow')
               yt = Ygen[p2]
               ax4 = fig.add_subplot(212)
@@ -559,6 +565,12 @@ class kc_td_interact():
               
               if self.l2 is None: return
               p2 = self.l2
+              ax1.cla()
+              ax2.cla()
+              ax3.cla()
+              redraw_ax1()
+              redraw_ax2()
+              redraw_ax3()
               ax1.plot(ti[p2],kc[p2],'o',ms = 13,alpha = 0.5,color = 'yellow')
               yt = Y[p2]
               ax4 = fig.add_subplot(212)
@@ -590,7 +602,7 @@ class pareto_interact():
             
             # line13 is the generated parameters and line12 is the picked parameters 
             if event.artist == line12:
-                radius = np.hypot(x-por[event.ind], y-tr[event.ind])
+                radius = np.hypot(x-np.array(por)[event.ind], y-np.array(tr)[event.ind])
                 minind = radius.argmin()
                 pstn = event.ind[minind]
                 self.lastind = pstn
@@ -1125,9 +1137,16 @@ Mopsocd = plt.axes([0.75, .92, 0.1, 0.05])
 Mop_button = Button(Mopsocd, 'Mopso-cd')
 Mop_button.on_clicked(Opt)
 
+def Clear_points(self):
+    return
+
+
+Pclear = plt.axes([.89, .01, 0.1, 0.05])
+Clearbutton = Button(Pclear, 'Reset')
+Clearbutton.on_clicked(Clear_points)
 
 # Objective radio buttons
-   # Y axis
+# Y axis
 rax = plt.axes([0.91, 0.75, 0.07, 0.15])
 radio = RadioButtons(rax, ('RT', 'OSR', 'ISE', 'IAE', 'ITAE'))
 
@@ -1155,3 +1174,4 @@ def colorfunc2(label):
 radio2.on_clicked(colorfunc2)
 
 plt.show()
+

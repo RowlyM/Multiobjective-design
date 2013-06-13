@@ -109,7 +109,7 @@ def cc():
             self.tdHentry.insert(0,"10")    
             
         def Get_entries(self):
-            self.quit()
+#            self.quit()
             global Nparticles, archivesize, maxgen, pMut, rememberevals, printinterval
             global kc_range, ti_range, td_range
             Nparticles =  eval(self.Nentry.get())
@@ -257,7 +257,7 @@ def cc():
             self.tdHentry.insert(0,"10")    
             
         def Get_entries(self):
-            self.quit()
+#            self.quit()
             global Nparticles, archivesize, maxgen, pMut, rememberevals, printinterval
             global kc_range, ti_range, td_range
             Nparticles =  eval(self.Nentry.get())
